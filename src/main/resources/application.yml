@@ -1,0 +1,48 @@
+spring:
+  main:
+    allow-circular-references: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  profiles:
+    include: oauth
+
+  config:
+    import:
+      - application-aws.yml
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update # create, update, none
+      naming:
+        #entity???, ??? ??? ?????? ??? ?????.
+        #??, org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy ??? ?????? ??,
+        #entity?? ???? myEmail ??? ??, DB? myEmail? ?? my_email? ????.
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      use-new-id-generator-mappings: false #jpa ?? numbering ??? ???? ???.
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true #querydsl jpql ??
+
+server:
+  port: 9000
+  servlet:
+    context-path: /
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        type: trace
+
+jwt:
+secret:
