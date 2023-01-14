@@ -29,7 +29,7 @@ spring:
         use_sql_comments: true #querydsl jpql ??
 
 server:
-  port: 9000
+  port: 8080
   servlet:
     context-path: /
     encoding:
