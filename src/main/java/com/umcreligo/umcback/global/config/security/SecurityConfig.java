@@ -34,7 +34,7 @@ public class SecurityConfig {
         JwtAuthenticationFilter authenticationFilter
                 = new JwtAuthenticationFilter(authManagerBuilder.getOrBuild());
         // 로그인 인증 필터
-        authenticationFilter.setFilterProcessesUrl("/auth/login");
+        authenticationFilter.setFilterProcessesUrl("/user/login");
         authenticationFilter.setAuthenticationSuccessHandler(successHandler);
         authenticationFilter.setAuthenticationFailureHandler(failureHandler);
 
