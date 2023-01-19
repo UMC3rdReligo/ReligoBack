@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umcreligo.umcback.domain.user.domain.User;
 import com.umcreligo.umcback.domain.user.dto.LoginTokenRes;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
+import com.umcreligo.umcback.global.config.BaseResponse;
 import com.umcreligo.umcback.global.config.security.jwt.JwtService;
 import com.umcreligo.umcback.global.config.security.userdetails.PrincipalUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class UserSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtService.createRefreshToken(user.getEmail());
         user.updateRefreshToken(refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getWriter(), new LoginTokenRes(accessToken, refreshToken));
+        LoginTokenRes loginTokenRes = new LoginTokenRes(accessToken,refreshToken);
+        new ObjectMapper().writeValue(response.getWriter(), new BaseResponse(loginTokenRes));
     }
 }
