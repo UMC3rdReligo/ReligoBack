@@ -1,0 +1,17 @@
+version: "3.1"
+
+services:
+  religo:
+    image: "jungminleeee/religo-back:latest"
+    ports:
+      - "127.0.0.1:8080:8080"
+    env_file:
+      - ".env.production"
+    environment:
+      TZ: "Asia/Seoul"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    restart: "unless-stopped"
