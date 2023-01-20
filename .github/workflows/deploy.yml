@@ -1,0 +1,67 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: gradle/wrapper-validation-action@v1
+      - uses: docker/setup-buildx-action@v2
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and Push a Docker Image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: jungminleeee/religo-back:latest
+      - name: Make Production Env
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_RELIGO_DB_HOSTNAME: ${{ secrets.RELIGO_DB_HOSTNAME }}
+          envkey_RELIGO_DB_PORT: ${{ secrets.RELIGO_DB_PORT }}
+          envkey_RELIGO_DB_SCHEMA: ${{ secrets.RELIGO_DB_SCHEMA }}
+          envkey_RELIGO_DB_USERNAME: ${{ secrets.RELIGO_DB_USERNAME }}
+          envkey_RELIGO_DB_PASSWORD: ${{ secrets.RELIGO_DB_PASSWORD }}
+          envkey_RELIGO_JWT_SECRET: ${{ secrets.RELIGO_JWT_SECRET }}
+          file_name: .env.production
+          fail_on_empty: true
+      - name: Setup Docker Compose Production Configuration
+        run: |
+          mkdir .deploy
+          cp .env.production docker-compose-production.yml .deploy/
+      - name: Deploy Docker Compose Production Configuration
+        uses: easingthemes/ssh-deploy@v2
+        env:
+          REMOTE_HOST: ${{ secrets.REMOTE_SSH_HOST }}
+          REMOTE_PORT: ${{ secrets.REMOTE_SSH_PORT }}
+          REMOTE_USER: ${{ secrets.REMOTE_SSH_USERNAME }}
+          SSH_PRIVATE_KEY: ${{ secrets.REMOTE_SSH_KEY }}
+          SOURCE: .deploy/
+          ARGS: -avz --delete
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+      - name: Run Docker
+        uses: appleboy/ssh-action@master
+        env:
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+        with:
+          host: ${{ secrets.REMOTE_SSH_HOST }}
+          port: ${{ secrets.REMOTE_SSH_PORT }}
+          username: ${{ secrets.REMOTE_SSH_USERNAME }}
+          key: ${{ secrets.REMOTE_SSH_KEY }}
+          envs: TARGET
+          script_stop: true
+          script: |
+            cd $TARGET
+            docker compose -f docker-compose-production.yml pull
+            docker compose -f docker-compose-production.yml up -d
+            docker image prune -af
