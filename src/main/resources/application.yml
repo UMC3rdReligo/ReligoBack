@@ -1,6 +1,7 @@
 spring:
   main:
     allow-circular-references: true
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -10,23 +11,27 @@ spring:
 
   config:
     import:
-      - application-aws.yml
+      - optional:application-aws.yml
 
   jpa:
-    open-in-view: true
+    open-in-view: true # 영속성 컨텍스트가 view까지 유지된다
     hibernate:
-      ddl-auto: update # create, update, none
+      ddl-auto: update # 서버 실행 시 주어진 엔티티 구조에 따라서 DB를 변경한다
       naming:
-        #entity???, ??? ??? ?????? ??? ?????.
-        #??, org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy ??? ?????? ??,
-        #entity?? ???? myEmail ??? ??, DB? myEmail? ?? my_email? ????.
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      use-new-id-generator-mappings: false #jpa ?? numbering ??? ???? ???.
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # 코드에서 사용한 필드명 그대로 DB에 저장한다
+      use-new-id-generator-mappings: false # 기본키 생성 전략이 AUTO인 경우 IDENTITY 전략을 따라간다
     properties:
       hibernate:
         show_sql: true
         format_sql: true
-        use_sql_comments: true #querydsl jpql ??
+        use_sql_comments: true
+    database: mysql
+
+  datasource:
+    url: jdbc:mysql://${env.RELIGO_DB_HOSTNAME}:${env.RELIGO_DB_PORT}/${env.RELIGO_DB_SCHEMA}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${env.RELIGO_DB_USERNAME}
+    password: ${env.RELIGO_DB_PASSWORD}
 
 server:
   port: 8080
@@ -45,4 +50,4 @@ logging:
         type: trace
 
 jwt:
-secret:
+  secret: ${env.RELIGO_JWT_SECRET}
