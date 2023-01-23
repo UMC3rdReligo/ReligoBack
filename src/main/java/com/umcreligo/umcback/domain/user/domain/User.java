@@ -47,13 +47,11 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-//    @CreatedDate
-//    @Column(name = "created_at", nullable = false)
-//    private LocalDateTime createdAt;
-//
-//    @LastModifiedDate
-//    @Column(name = "modified_at", nullable = false)
-//    private LocalDateTime modifiedAt;
+    @Column
+    private LocalDateTime createdAt;
+
+    @Column
+    private LocalDateTime updatedAt;
 
     @Column
     private String email;
