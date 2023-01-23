@@ -45,32 +45,32 @@ public class UserService {
 
 
     //refresh는 잠시 보류
-    public LoginTokenRes refresh(HttpServletRequest request) {
-        // Refresh Token 유효성 검사
-        String refreshToken = jwtService.getToken(request);
-        DecodedJWT decodedJWT = jwtService.verifyToken(refreshToken);
-
-        String email = jwtService.getEmail(refreshToken);
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new JwtException(INVALID_TOKEN));
-
-        if (user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken)) {
-            throw new JwtException(INVALID_TOKEN);
-        }
-
-        // refresh token 유효성 검사 완료 후 -> access token 재발급
-        String accessToken = jwtService.createAccessToken(user.getEmail(), user.getId());
-        LoginTokenRes tokenResponse = new LoginTokenRes(accessToken, null);
-
-        // Refresh Token 만료시간 계산해 1개월 미만일 시 refresh token도 발급
-        long diffDays = jwtService.calculateRefreshExpiredDays(decodedJWT);
-        if (diffDays < TOKEN_REFRESH_DAYS) {
-            String newRefreshToken = jwtService.createRefreshToken(user.getEmail());
-            tokenResponse.setRefreshToken(newRefreshToken);
-            user.updateRefreshToken(newRefreshToken);
-        }
-        return tokenResponse;
-    }
+//    public LoginTokenRes refresh(HttpServletRequest request) {
+//        // Refresh Token 유효성 검사
+//        String refreshToken = jwtService.getToken(request);
+//        DecodedJWT decodedJWT = jwtService.verifyToken(refreshToken);
+//
+//        String email = jwtService.getEmail(refreshToken);
+//
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new JwtException(INVALID_TOKEN));
+//
+//        if (user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken)) {
+//            throw new JwtException(INVALID_TOKEN);
+//        }
+//
+//        // refresh token 유효성 검사 완료 후 -> access token 재발급
+//        String accessToken = jwtService.createAccessToken(user.getEmail(), user.getId());
+//        LoginTokenRes tokenResponse = new LoginTokenRes(accessToken, null);
+//
+//        // Refresh Token 만료시간 계산해 1개월 미만일 시 refresh token도 발급
+//        long diffDays = jwtService.calculateRefreshExpiredDays(decodedJWT);
+//        if (diffDays < TOKEN_REFRESH_DAYS) {
+//            String newRefreshToken = jwtService.createRefreshToken(user.getEmail());
+//            tokenResponse.setRefreshToken(newRefreshToken);
+//            user.updateRefreshToken(newRefreshToken);
+//        }
+//        return tokenResponse;
+//    }
 }
 

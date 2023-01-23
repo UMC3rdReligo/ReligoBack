@@ -9,6 +9,8 @@ public class LoginTokenRes {
     private String accessToken;
     private String refreshToken;
 
+    private String signYN;
+
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }

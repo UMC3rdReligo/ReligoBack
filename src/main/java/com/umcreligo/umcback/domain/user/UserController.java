@@ -33,10 +33,10 @@ public class UserController {
         return new BaseResponse(BaseResponseStatus.SUCCESS);
     }
 
-    //이건 보
-    @PostMapping("user/refresh")
-    public ResponseEntity<LoginTokenRes> refresh(HttpServletRequest request) {
-        return ResponseEntity.ok(userService.refresh(request));
-    }
+    //이건 보류
+//    @PostMapping("user/refresh")
+//    public ResponseEntity<LoginTokenRes> refresh(HttpServletRequest request) {
+//        return ResponseEntity.ok(userService.refresh(request));
+//    }
 
 }

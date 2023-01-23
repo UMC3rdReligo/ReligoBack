@@ -1,10 +1,7 @@
 package com.umcreligo.umcback.domain.user.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,9 +16,10 @@ import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor(access = PRIVATE)
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -31,19 +29,19 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable = true)
+    @Column
     private String name;
-    @Column(nullable = false)
+    @Column
     private String password;
 
-    @Column(nullable = true)
+    @Column
     private String profileImgUrl;
 
-    @Column(nullable = false)
+    @Column
     private String phoneNum;
 
     //LocationCode 필요
-    @Column(nullable = false)
+    @Column
     private String gender;
 
     @Enumerated(EnumType.STRING)
@@ -57,13 +55,13 @@ public class User {
 //    @Column(name = "modified_at", nullable = false)
 //    private LocalDateTime modifiedAt;
 
-    @Column(nullable = false)
+    @Column
     private String email;
 
-    @Column(nullable = true)
+    @Column
     private String address;
 
-    @Column(nullable = true)
+    @Column
     private String refreshToken;
 
     public void updateRefreshToken(String refreshToken) {
