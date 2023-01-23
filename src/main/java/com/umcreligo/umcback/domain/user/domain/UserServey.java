@@ -34,4 +34,10 @@ public class UserServey {
 
     @Column
     private LocalDateTime updatedAt;
+
+    public UserServey(String questionCode , String answer , User user){
+        this.questionCode =questionCode;
+        this.answer = answer;
+        this.user = user;
+    }
 }

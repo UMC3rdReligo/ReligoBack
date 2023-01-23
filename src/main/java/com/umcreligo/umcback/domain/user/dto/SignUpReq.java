@@ -10,18 +10,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class SignUpReq {
-    private String email;
-    private String password;
-    private String PhoneNumber;
-    private String gender;
-
-    public User createUser(String encodedPassword){
-        return User.builder()
-                .email(this.email)
-                .password(encodedPassword)
-                .phoneNum(this.PhoneNumber)
-                .gender(this.gender)
-                .build();
-    }
+    private String question_1;
+    private String address;
+    private String question_2;
+    private String question_3;
+    //해시태그
+    private String question_4;
+    private String question_5;
+    private String question_6;
+    private String nickname;
 
 }
