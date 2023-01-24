@@ -1,6 +1,7 @@
 package com.umcreligo.umcback.domain.user.domain;
 
 
+import com.umcreligo.umcback.domain.hashtag.domain.HashTag;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,8 +21,13 @@ public class UserHashTag {
     @Column(name = "userhashtag_id")
     private Long id;
 
-    @Column(length = 45, nullable = false)
-    private String questionCode;
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "hashtag_id")
+    private HashTag hashTag;
 
     @Column
     private LocalDateTime createdAt;
