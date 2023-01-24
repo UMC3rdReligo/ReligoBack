@@ -45,6 +45,7 @@ public class User {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "locationrCode")
     private Location location;
+
     @Column
     private String gender;
 
