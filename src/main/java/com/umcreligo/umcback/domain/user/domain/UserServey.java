@@ -17,7 +17,6 @@ public class UserServey {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userservey_id")
     private Long id;
 
     @Column(length = 45, nullable = false)

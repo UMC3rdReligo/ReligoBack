@@ -20,7 +20,6 @@ public class HashTag {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "hashtag_id")
     private Long id;
 
     @Column

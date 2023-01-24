@@ -18,15 +18,14 @@ public class UserHashTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userhashtag_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "hashtag_id")
+    @JoinColumn(name = "hashtagId")
     private HashTag hashTag;
 
     @Column
