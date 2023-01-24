@@ -39,7 +39,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter { //Jwt올바�
         AntPathMatcher pathMatcher = new AntPathMatcher();
         return (
                 // TODO 인증이 필요없는 로직 추가
-                pathMatcher.match("/user/login", path) || pathMatcher.match("/user/signup", path) && request.getMethod().equals("POST")
+                pathMatcher.match("/user/login", path) && request.getMethod().equals("POST")
         );
     }
 
