@@ -19,7 +19,7 @@ public class Church {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "platformId", nullable = false)
+    @JoinColumn(name = "platformCode", nullable = false)
     @ToString.Exclude
     private Platform platform;
 
