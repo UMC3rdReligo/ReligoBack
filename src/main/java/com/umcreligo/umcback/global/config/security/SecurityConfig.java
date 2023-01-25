@@ -42,7 +42,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().antMatchers( "/swagger-resources/**",
             "/swagger-ui/**",
-            "/v2/api-docs",
+            "/v3/api-docs",
             "/webjars/**");
     }
 

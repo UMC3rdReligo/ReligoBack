@@ -44,7 +44,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter { //Jwt올바�
                     pathMatcher.match("/swagger-ui/**", path) ||
                     pathMatcher.match("/favicon.ico", path) ||
                 pathMatcher.match("/swagger-resources/**", path) ||
-                pathMatcher.match("/v2/api-docs", path)
+                pathMatcher.match("/v3/api-docs", path)
         );
     }
 
