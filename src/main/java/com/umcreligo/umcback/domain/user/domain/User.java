@@ -1,6 +1,7 @@
 package com.umcreligo.umcback.domain.user.domain;
 
 
+import com.umcreligo.umcback.domain.location.domain.Location;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -41,6 +42,10 @@ public class User {
     private String phoneNum;
 
     //LocationCode 필요
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "locationCode")
+    private Location location;
+
     @Column
     private String gender;
 
