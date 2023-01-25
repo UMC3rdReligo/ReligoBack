@@ -25,7 +25,7 @@ public class UserHashTag {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "hashtagId")
+    @JoinColumn(name = "hashtagCode", nullable = false)
     private HashTag hashTag;
 
     @Column

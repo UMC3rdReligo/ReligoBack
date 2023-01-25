@@ -19,8 +19,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class HashTag {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+    @Column(length = 45 , nullable = false)
+    private Long code;
 
     @Column
     private String text;
