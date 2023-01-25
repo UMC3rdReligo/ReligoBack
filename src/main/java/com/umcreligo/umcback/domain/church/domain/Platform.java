@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @ToString
 public class Platform {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(length = 45, nullable = false)
+    private String code;
 
     @Column(length = 45, nullable = false)
     private String name;
