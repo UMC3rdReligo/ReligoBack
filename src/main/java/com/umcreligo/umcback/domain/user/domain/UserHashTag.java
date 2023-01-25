@@ -26,6 +26,7 @@ public class UserHashTag {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "hashtagCode", nullable = false)
+    @ToString.Exclude
     private HashTag hashTag;
 
     @Column
