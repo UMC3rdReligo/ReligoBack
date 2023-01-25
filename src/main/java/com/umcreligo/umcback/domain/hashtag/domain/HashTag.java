@@ -20,7 +20,7 @@ public class HashTag {
 
     @Id
     @Column(length = 45 , nullable = false)
-    private Long code;
+    private String code;
 
     @Column
     private String text;
