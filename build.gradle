@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.auth0:java-jwt:4.0.0'
     implementation 'commons-io:commons-io:2.11.0'
+    implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
     implementation 'me.paulschwarz:spring-dotenv:2.5.4'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
