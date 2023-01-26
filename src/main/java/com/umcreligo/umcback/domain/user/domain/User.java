@@ -42,7 +42,7 @@ public class User {
     private String phoneNum;
 
     //LocationCode 필요
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "locationCode")
     private Location location;
 
