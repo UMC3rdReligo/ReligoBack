@@ -1,6 +1,5 @@
 package com.umcreligo.umcback.global.config.service;
 
-
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
