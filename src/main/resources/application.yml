@@ -33,6 +33,24 @@ spring:
     username: ${env.RELIGO_DB_USERNAME}
     password: ${env.RELIGO_DB_PASSWORD}
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+cloud:
+  aws:
+    s3:
+      bucket: ${env.RELIGO_BUCKET}
+    credentials:
+      access-key: ${env.RELIGO_ACCESS_KEY}
+      secret-key: ${env.RELIGO_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
 server:
   port: 8080
   servlet:
