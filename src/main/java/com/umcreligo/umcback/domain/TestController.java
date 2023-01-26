@@ -1,5 +1,6 @@
-package com.umcreligo.umcback.global.config.service;
+package com.umcreligo.umcback.domain;
 
+import com.umcreligo.umcback.global.config.service.S3Service;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
