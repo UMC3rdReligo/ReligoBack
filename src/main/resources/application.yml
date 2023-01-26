@@ -40,14 +40,13 @@ spring:
 
 cloud:
   aws:
-    s3:
-      bucket: ${env.RELIGO_BUCKET}
     credentials:
       access-key: ${env.RELIGO_ACCESS_KEY}
       secret-key: ${env.RELIGO_SECRET_KEY}
+    s3:
+      bucket: ${env.RELIGO_BUCKET}
     region:
       static: ap-northeast-2
-      auto: false
     stack:
       auto: false
 
