@@ -1,6 +1,6 @@
 package com.umcreligo.umcback.domain.church;
 
-import com.umcreligo.umcback.domain.church.domain.Church;
+import com.umcreligo.umcback.domain.church.dto.FindChurchResult;
 import com.umcreligo.umcback.domain.church.service.ChurchProvider;
 import com.umcreligo.umcback.global.config.BaseResponse;
 import com.umcreligo.umcback.global.config.BaseResponseStatus;
@@ -21,7 +21,7 @@ public class ChurchController {
     private final ChurchProvider churchProvider;
 
     @GetMapping("/{churchId}")
-    public ResponseEntity<BaseResponse<Church>> findChurch(@PathVariable("churchId") Long churchId) {
+    public ResponseEntity<BaseResponse<FindChurchResult>> findChurch(@PathVariable("churchId") Long churchId) {
         try {
             return ResponseEntity.ok(new BaseResponse<>(this.churchProvider.findChurch(churchId).orElseThrow()));
         } catch (NoSuchElementException e) {
