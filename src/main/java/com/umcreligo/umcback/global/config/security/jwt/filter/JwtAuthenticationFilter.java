@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StreamUtils;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -41,20 +43,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         EntityManager em = enf.createEntityManager();
 
-        //디비 저장하기 위한 transaction 만들기
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        System.out.println("----------------------------");
-
         //Json으로 받기
         ServletInputStream inputStream = null;
         LoginDto helloData = null;
         try {
             inputStream = request.getInputStream();
             String msgBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
-            System.out.println("msg Body = " + msgBody);
-
-
             helloData = mapper.readValue(msgBody, LoginDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -62,14 +56,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String email = helloData.getEmail();
         String password = helloData.getPassword();
-        System.out.println(email + " " +password);
-        String encodedPassword = passwordEncoder.encode(password);
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(encodedPassword);
-        userRepository.save(user);
-        transaction.commit();
+        //첫 로그인 일시 만 저장함
+        Optional<User> option = userRepository.findByEmail(email);
+        if(!option.isPresent()){
+            //디비 저장하기 위한 transaction 만들기
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
 
+            System.out.println(email + " " +password);
+            String encodedPassword = passwordEncoder.encode(password);
+            User user = new User();
+            user.setEmail(email);
+            user.setPassword(encodedPassword);
+            userRepository.save(user);
+            transaction.commit();
+
+        }
         Authentication authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
         Authentication authentication =
                 authenticationManager.authenticate(authenticationToken);
