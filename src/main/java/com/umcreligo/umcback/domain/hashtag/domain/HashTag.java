@@ -3,11 +3,11 @@ package com.umcreligo.umcback.domain.hashtag.domain;
 
 import lombok.*;
 
-import javax.persistence.*;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
-
-import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "hashtag")
@@ -17,9 +17,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Builder
 @ToString
 public class HashTag {
-
     @Id
-    @Column(length = 45 , nullable = false)
+    @Column(length = 45, nullable = false)
     private String code;
 
     @Column

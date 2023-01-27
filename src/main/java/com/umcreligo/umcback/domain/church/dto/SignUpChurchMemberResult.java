@@ -1,4 +1,4 @@
 package com.umcreligo.umcback.domain.church.dto;
 
-public class ChurchSignUpMemberResult {
+public class SignUpChurchMemberResult {
 }
