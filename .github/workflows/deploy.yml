@@ -38,6 +38,12 @@ jobs:
           envkey_RELIGO_DB_USERNAME: ${{ secrets.RELIGO_DB_USERNAME }}
           envkey_RELIGO_DB_PASSWORD: ${{ secrets.RELIGO_DB_PASSWORD }}
           envkey_RELIGO_JWT_SECRET: ${{ secrets.RELIGO_JWT_SECRET }}
+          envkey_RELIGO_BUCKET: ${{ secrets.RELIGO_BUCKET }}
+          envkey_RELIGO_ACCESS_KEY: ${{ secrets.RELIGO_ACCESS_KEY }}
+          envkey_RELIGO_SECRET_KEY: ${{ secrets.RELIGO_SECRET_KEY }}
+          envkey_RELIGO_ELASTICSEARCH_HOST: ${{ secrets.RELIGO_ELASTICSEARCH_HOST }}
+          envkey_RELIGO_ELASTICSEARCH_USER: ${{ secrets.RELIGO_ELASTICSEARCH_USER }}
+          envkey_RELIGO_ELASTICSEARCH_PASSWORD: ${{ secrets.RELIGO_ELASTICSEARCH_PASSWORD }}
           file_name: .env.production
           fail_on_empty: true
       - name: Setup Docker Compose Production Configuration
