@@ -2,10 +2,16 @@ package com.umcreligo.umcback.domain.user.service;
 
 import com.umcreligo.umcback.domain.church.dto.FindChurchResult;
 import com.umcreligo.umcback.domain.church.service.ChurchProvider;
+import com.umcreligo.umcback.domain.hashtag.domain.HashTag;
+import com.umcreligo.umcback.domain.hashtag.repository.HashTagRepository;
+import com.umcreligo.umcback.domain.location.domain.Location;
+import com.umcreligo.umcback.domain.location.repository.LocationRepository;
 import com.umcreligo.umcback.domain.user.domain.User;
+import com.umcreligo.umcback.domain.user.domain.UserHashTag;
 import com.umcreligo.umcback.domain.user.domain.UserServey;
 import com.umcreligo.umcback.domain.user.dto.SignUpReq;
 import com.umcreligo.umcback.domain.user.dto.UserChurchRes;
+import com.umcreligo.umcback.domain.user.repository.UserHashTagRepository;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import com.umcreligo.umcback.domain.user.repository.UserServeyRepository;
 import com.umcreligo.umcback.global.config.security.jwt.JwtService;
@@ -29,10 +35,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ChurchProvider churchProvider;
+
+    private final HashTagRepository hashTagRepository;
+
+    private final UserHashTagRepository userHashTagRepository;
+
+    private final LocationRepository locationRepository;
     private final UserServeyRepository userServeyRepository;
 
     @Transactional
-    public void signup(SignUpReq signUpReq) {
+    public void signup(SignUpReq signUpReq) throws NoSuchElementException{
         User user = userRepository.findByEmail(jwtService.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("가입된 이메일이 존재하지 않습니다."));
         UserServey userServey1 = new UserServey("Q1",signUpReq.getQuestion_1(),user);
@@ -55,8 +67,19 @@ public class UserService {
         userServeyRepository.save(userServey9);
         UserServey userServey10 = new UserServey("Q10",signUpReq.getQuestion_6(),user);
         userServeyRepository.save(userServey10);
+        signUpReq.getHashTag().stream().forEach(hashtag -> SaveUserHashTag(hashtag,user) );
+        Location location = locationRepository.findByAddress1AndAddress2AndAddress3(signUpReq.getAddress1(), signUpReq.getAddress2(), signUpReq.getAddress3()).orElseThrow();
+        user.setLocation(location);
         user.setAddress(signUpReq.getAddress());
         user.setNickname(signUpReq.getNickname());
+    }
+    private void SaveUserHashTag(String text,User user) throws NoSuchElementException{
+        HashTag hashTag = hashTagRepository.findByText(text).orElseThrow();
+        UserHashTag userHashTag = new UserHashTag();
+        userHashTag.setUser(user);
+        userHashTag.setHashTag(hashTag);
+        userHashTagRepository.save(userHashTag);
+
     }
 
     public void logout() {

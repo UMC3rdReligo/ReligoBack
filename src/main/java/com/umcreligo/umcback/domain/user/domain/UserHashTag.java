@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "userservey_hashtag")
+@Setter
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @ToString

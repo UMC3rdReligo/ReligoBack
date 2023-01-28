@@ -6,15 +6,25 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 public class SignUpReq {
     private String question_1;
+
+    //상세주소
     private String address;
     private String question_2;
     private String question_3;
-    //해시태그
+    private List<String> hashTag;
+
+    //시,구,동
+    private String address1;
+    private String address2;
+    private String address3;
+
     private String question_4;
     private String question_5;
     private String question_6;
