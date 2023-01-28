@@ -1,0 +1,1 @@
+monitoring.elasticsearch.hosts: "${RELIGO_ELASTICSEARCH_HOST}"

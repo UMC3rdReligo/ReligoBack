@@ -17,13 +17,18 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and Push a Docker Image
+      - name: Build and Push a Main Docker Image
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./Dockerfile
           push: true
           tags: jungminleeee/religo-back:latest
+      - name: Build and Push a Logstash Docker Image
+        uses: docker/build-push-action@v3
+        with:
+          context: logstash
+          push: true
+          tags: jungminleeee/religo-back-logstash:latest
       - name: Make Production Env
         uses: SpicyPizza/create-envfile@v1.3
         with:

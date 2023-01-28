@@ -61,10 +61,22 @@ server:
 
 logging:
   level:
-    org:
-      hibernate:
-        SQL: debug
-        type: trace
+    org.springframework:
+      data:
+        elasticsearch:
+          client:
+            WIRE: trace
+    org.hibernate:
+      SQL: debug
+      type: trace
+    com.amazonaws:
+      util:
+        EC2MetadataUtils: error
 
 jwt:
   secret: ${env.RELIGO_JWT_SECRET}
+
+elasticsearch:
+  host: ${env.RELIGO_ELASTICSEARCH_HOST}
+  user: ${env.RELIGO_ELASTICSEARCH_USER}
+  password: ${env.RELIGO_ELASTICSEARCH_PASSWORD}

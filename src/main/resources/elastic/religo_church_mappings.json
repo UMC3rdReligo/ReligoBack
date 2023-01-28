@@ -1,0 +1,63 @@
+{
+  "properties": {
+    "id": {
+      "type": "keyword"
+    },
+    "name": {
+      "type": "text",
+      "analyzer": "religo_nori",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "address": {
+      "type": "text",
+      "analyzer": "religo_nori",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "introduction": {
+      "type": "text",
+      "analyzer": "religo_nori"
+    },
+    "hashtags": {
+      "type": "text",
+      "analyzer": "whitespace",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "locationcode": {
+      "type": "text",
+      "analyzer": "whitespace",
+      "index_prefixes": {},
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "platformcode": {
+      "type": "text",
+      "analyzer": "whitespace",
+      "index_prefixes": {},
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    }
+  }
+}

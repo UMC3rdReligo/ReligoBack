@@ -15,3 +15,13 @@ services:
         max-size: "10m"
         max-file: "5"
     restart: "unless-stopped"
+  logstash:
+    image: "jungminleeee/religo-back-logstash:latest"
+    env_file:
+      - ".env"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    restart: "unless-stopped"

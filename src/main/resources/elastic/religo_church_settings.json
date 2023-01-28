@@ -1,0 +1,20 @@
+{
+  "analysis": {
+    "analyzer": {
+      "religo_nori": {
+        "type": "custom",
+        "tokenizer": "nori_discard",
+        "filter": [
+          "lowercase",
+          "nori_readingform"
+        ]
+      }
+    },
+    "tokenizer": {
+      "nori_discard": {
+        "type": "nori_tokenizer",
+        "decompound_mode": "discard"
+      }
+    }
+  }
+}
