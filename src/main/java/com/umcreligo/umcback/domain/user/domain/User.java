@@ -1,6 +1,7 @@
 package com.umcreligo.umcback.domain.user.domain;
 
 
+import com.umcreligo.umcback.domain.church.domain.Church;
 import com.umcreligo.umcback.domain.location.domain.Location;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -63,6 +64,13 @@ public class User {
 
     @Column
     private String address;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "churchId")
+    private Church church;
+
+    @Column
+    private String nickname;
 
     @Column
     private String refreshToken;

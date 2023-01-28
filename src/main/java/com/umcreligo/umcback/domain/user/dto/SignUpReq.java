@@ -18,6 +18,10 @@ public class SignUpReq {
     private String question_4;
     private String question_5;
     private String question_6;
+    private String question_7;
+    private String question_8;
+    private String question_9;
+    private String question_10;
     private String nickname;
 
 }

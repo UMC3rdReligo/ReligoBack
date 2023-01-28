@@ -35,20 +35,28 @@ public class UserService {
     public void signup(SignUpReq signUpReq) {
         User user = userRepository.findByEmail(jwtService.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("가입된 이메일이 존재하지 않습니다."));
-        UserServey userServey1 = new UserServey("1",signUpReq.getQuestion_1(),user);
+        UserServey userServey1 = new UserServey("Q1",signUpReq.getQuestion_1(),user);
         userServeyRepository.save(userServey1);
-        UserServey userServey2 = new UserServey("2",signUpReq.getQuestion_2(),user);
+        UserServey userServey2 = new UserServey("Q2",signUpReq.getQuestion_2(),user);
         userServeyRepository.save(userServey2);
-        UserServey userServey3 = new UserServey("3",signUpReq.getQuestion_3(),user);
+        UserServey userServey3 = new UserServey("Q3",signUpReq.getQuestion_3(),user);
         userServeyRepository.save(userServey3);
-        UserServey userServey4 = new UserServey("4",signUpReq.getQuestion_4(),user);
+        UserServey userServey4 = new UserServey("Q4",signUpReq.getQuestion_4(),user);
         userServeyRepository.save(userServey4);
-        UserServey userServey5 = new UserServey("5",signUpReq.getQuestion_5(),user);
+        UserServey userServey5 = new UserServey("Q5",signUpReq.getQuestion_5(),user);
         userServeyRepository.save(userServey5);
-        UserServey userServey6 = new UserServey("6",signUpReq.getQuestion_6(),user);
+        UserServey userServey6 = new UserServey("Q6",signUpReq.getQuestion_6(),user);
         userServeyRepository.save(userServey6);
+        UserServey userServey7 = new UserServey("Q7",signUpReq.getQuestion_4(),user);
+        userServeyRepository.save(userServey7);
+        UserServey userServey8 = new UserServey("Q8",signUpReq.getQuestion_5(),user);
+        userServeyRepository.save(userServey8);
+        UserServey userServey9 = new UserServey("Q9",signUpReq.getQuestion_6(),user);
+        userServeyRepository.save(userServey9);
+        UserServey userServey10 = new UserServey("Q10",signUpReq.getQuestion_6(),user);
+        userServeyRepository.save(userServey10);
         user.setAddress(signUpReq.getAddress());
-        user.setName(signUpReq.getNickname());
+        user.setNickname(signUpReq.getNickname());
     }
 
     public void logout() {

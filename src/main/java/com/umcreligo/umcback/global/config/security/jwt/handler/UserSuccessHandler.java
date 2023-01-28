@@ -38,7 +38,7 @@ public class UserSuccessHandler implements AuthenticationSuccessHandler {
 
         String signYN;
         //Auth 로그인 시 가입이 되어있는지 체크
-        if(user.getName()== null){
+        if(user.getNickname()== null){
             signYN="가입이 안되어 있습니다.";
         }else{
             signYN="가입이 되어 있습니다.";
