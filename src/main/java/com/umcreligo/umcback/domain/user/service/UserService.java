@@ -43,7 +43,6 @@ public class UserService {
     private final LocationRepository locationRepository;
     private final UserServeyRepository userServeyRepository;
 
-    @Transactional
     public void signup(SignUpReq signUpReq) throws NoSuchElementException{
         User user = userRepository.findByEmail(jwtService.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("가입된 이메일이 존재하지 않습니다."));
