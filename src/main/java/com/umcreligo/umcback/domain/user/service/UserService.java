@@ -67,7 +67,7 @@ public class UserService {
         UserServey userServey10 = new UserServey("Q10",signUpReq.getQuestion_6(),user);
         userServeyRepository.save(userServey10);
         signUpReq.getHashTag().stream().forEach(hashtag -> SaveUserHashTag(hashtag,user) );
-        Location location = locationRepository.findByAddress1AndAddress2AndAddress3(signUpReq.getAddress1(), signUpReq.getAddress2(), signUpReq.getAddress3()).orElseThrow();
+        Location location = locationRepository.findByCode(signUpReq.getLocationCode()).orElseThrow();
         user.setLocation(location);
         user.setAddress(signUpReq.getAddress());
         user.setNickname(signUpReq.getNickname());

@@ -21,9 +21,7 @@ public class SignUpReq {
     private List<String> hashTag;
 
     //시,구,동
-    private String address1;
-    private String address2;
-    private String address3;
+    private String locationCode;
 
     private String question_4;
     private String question_5;
