@@ -2,16 +2,19 @@ package com.umcreligo.umcback.domain.user;
 
 import com.umcreligo.umcback.domain.user.dto.LoginTokenRes;
 import com.umcreligo.umcback.domain.user.dto.SignUpReq;
+import com.umcreligo.umcback.domain.user.dto.UserChurchRes;
 import com.umcreligo.umcback.domain.user.service.UserService;
 import com.umcreligo.umcback.global.config.BaseResponse;
 import com.umcreligo.umcback.global.config.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @RestController
@@ -31,6 +34,11 @@ public class UserController {
     public BaseResponse logout() {
         userService.logout();
         return new BaseResponse(BaseResponseStatus.SUCCESS);
+    }
+
+    @GetMapping("/user/church")
+    public BaseResponse<UserChurchRes> ChurchbyUser(){
+        return new BaseResponse<UserChurchRes>(userService.findChurchbyUser());
     }
 
     //이건 보류

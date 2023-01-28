@@ -1,10 +1,11 @@
 package com.umcreligo.umcback.domain.user.service;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.umcreligo.umcback.domain.church.dto.FindChurchResult;
+import com.umcreligo.umcback.domain.church.service.ChurchProvider;
 import com.umcreligo.umcback.domain.user.domain.User;
 import com.umcreligo.umcback.domain.user.domain.UserServey;
-import com.umcreligo.umcback.domain.user.dto.LoginTokenRes;
 import com.umcreligo.umcback.domain.user.dto.SignUpReq;
+import com.umcreligo.umcback.domain.user.dto.UserChurchRes;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import com.umcreligo.umcback.domain.user.repository.UserServeyRepository;
 import com.umcreligo.umcback.global.config.security.jwt.JwtService;
@@ -15,10 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
-import static com.umcreligo.umcback.global.config.security.jwt.JwtService.TOKEN_REFRESH_DAYS;
-import static com.umcreligo.umcback.global.config.security.jwt.exception.JwtErrorCode.INVALID_TOKEN;
 import static com.umcreligo.umcback.global.config.security.jwt.exception.JwtErrorCode.USER_NOT_FOUND;
 
 @Transactional
@@ -29,6 +28,7 @@ public class UserService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ChurchProvider churchProvider;
     private final UserServeyRepository userServeyRepository;
 
     @Transactional
@@ -63,6 +63,33 @@ public class UserService {
         User user = userRepository.findById(jwtService.getId())
                 .orElseThrow(() -> new JwtException(USER_NOT_FOUND));
         user.deleteRefreshToken();
+    }
+
+    public UserChurchRes findChurchbyUser() throws NoSuchElementException {
+        User user = userRepository.findWithJoinById(jwtService.getId());
+        FindChurchResult findChurchResult = Optional.of(churchProvider.findChurch(user.getChurch().getId()).orElseThrow())
+            .orElseThrow();
+        Map<String, Object> info = new HashMap<>();
+        info.put("churchAddress",findChurchResult.getInfo().getAddress());
+        info.put("churchCreatedAt",findChurchResult.getInfo().getCreatedAt());
+        info.put("churchHomepage",findChurchResult.getInfo().getHomepageURL());
+        info.put("introduction",findChurchResult.getInfo().getIntroduction());
+        info.put("locationAddress1",findChurchResult.getInfo().getLocation().getAddress1());
+        info.put("locationAddress2",findChurchResult.getInfo().getLocation().getAddress2());
+        info.put("locationAddress3",findChurchResult.getInfo().getLocation().getAddress3());
+        info.put("minister",findChurchResult.getInfo().getMinister());
+        info.put("phoneNum",findChurchResult.getInfo().getPhoneNum());
+        info.put("platformName",findChurchResult.getInfo().getPlatform().getName());
+        info.put("schedule",findChurchResult.getInfo().getSchedule());
+        UserChurchRes userChurchRes = new UserChurchRes(
+            user.getName(),
+            user.getNickname(),
+            info,
+            findChurchResult.getHashTags(),
+            findChurchResult.getMainImage(),
+            findChurchResult.getDetailImages());
+
+        return userChurchRes;
     }
 
 

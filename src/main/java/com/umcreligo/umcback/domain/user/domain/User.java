@@ -67,6 +67,7 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "churchId")
+    @ToString.Exclude
     private Church church;
 
     @Column
