@@ -74,6 +74,7 @@ public class UserService {
     }
     private void SaveUserHashTag(String text,User user) throws NoSuchElementException{
         HashTag hashTag = hashTagRepository.findByText(text).orElseThrow();
+        hashTag.setUserCount(hashTag.getUserCount()+1);
         UserHashTag userHashTag = new UserHashTag();
         userHashTag.setUser(user);
         userHashTag.setHashTag(hashTag);
