@@ -24,11 +24,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/user/signup")
-    public BaseResponse signup(
+    public ResponseEntity<BaseResponse> signup(
             @RequestBody final SignUpReq signUpReq) {
-        userService.signup(signUpReq);
-        System.out.println("성공");
-        return new BaseResponse(BaseResponseStatus.SUCCESS);
+        try {
+            userService.signup(signUpReq);
+            return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
     }
 
     @PostMapping("/user/logout")
