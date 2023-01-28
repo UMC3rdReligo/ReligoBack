@@ -12,7 +12,7 @@ public class PopularHashTagRes {
     @Data
     @AllArgsConstructor
     public static class HashTagDto{
-        String tag;
+        String code;
         Long count;
     }
 }

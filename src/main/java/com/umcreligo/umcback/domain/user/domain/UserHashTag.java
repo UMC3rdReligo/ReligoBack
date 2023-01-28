@@ -3,6 +3,8 @@ package com.umcreligo.umcback.domain.user.domain;
 
 import com.umcreligo.umcback.domain.hashtag.domain.HashTag;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -31,8 +33,10 @@ public class UserHashTag {
     private HashTag hashTag;
 
     @Column
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

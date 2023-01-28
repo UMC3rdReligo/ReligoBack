@@ -23,7 +23,7 @@ public class HashTagService {
         List<HashTag> hashTagList = hashTagRepository.findAllByOrderByUserCountDesc(pageRequest);
         List<PopularHashTagRes.HashTagDto> hashTags = hashTagList
             .stream()
-            .map(hashTag -> new PopularHashTagRes.HashTagDto(hashTag.getText(),hashTag.getUserCount()))
+            .map(hashTag -> new PopularHashTagRes.HashTagDto(hashTag.getCode(),hashTag.getUserCount()))
             .collect(Collectors.toList());
         PopularHashTagRes popularHashTagRes = new PopularHashTagRes();
         popularHashTagRes.setHashtags(hashTags);

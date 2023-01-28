@@ -4,6 +4,8 @@ package com.umcreligo.umcback.domain.user.domain;
 import com.umcreligo.umcback.domain.church.domain.Church;
 import com.umcreligo.umcback.domain.location.domain.Location;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -54,9 +56,11 @@ public class User {
     private Role role;
 
     @Column
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @Column
