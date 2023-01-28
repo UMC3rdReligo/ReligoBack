@@ -7,6 +7,7 @@ import com.umcreligo.umcback.domain.user.service.UserService;
 import com.umcreligo.umcback.global.config.BaseResponse;
 import com.umcreligo.umcback.global.config.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,8 +38,12 @@ public class UserController {
     }
 
     @GetMapping("/user/church")
-    public BaseResponse<UserChurchRes> ChurchbyUser(){
-        return new BaseResponse<UserChurchRes>(userService.findChurchbyUser());
+    public ResponseEntity<BaseResponse<UserChurchRes>> ChurchbyUser(){
+        try {
+            return ResponseEntity.ok(new BaseResponse<>(this.userService.findChurchbyUser()));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
     }
 
     //이건 보류
