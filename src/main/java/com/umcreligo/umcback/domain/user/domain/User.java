@@ -1,10 +1,11 @@
 package com.umcreligo.umcback.domain.user.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.umcreligo.umcback.domain.church.domain.Church;
+import com.umcreligo.umcback.domain.location.domain.Location;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,9 +20,10 @@ import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor(access = PRIVATE)
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -31,39 +33,51 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable = true)
+    @Column
     private String name;
-    @Column(nullable = false)
+    @Column
     private String password;
 
-    @Column(nullable = true)
+    @Column
     private String profileImgUrl;
 
-    @Column(nullable = false)
+    @Column
     private String phoneNum;
 
     //LocationCode 필요
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "locationCode")
+    private Location location;
+
+    @Column
     private String gender;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-//    @CreatedDate
-//    @Column(name = "created_at", nullable = false)
-//    private LocalDateTime createdAt;
-//
-//    @LastModifiedDate
-//    @Column(name = "modified_at", nullable = false)
-//    private LocalDateTime modifiedAt;
+    @Column
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @Column
     private String email;
 
-    @Column(nullable = true)
+    @Column
     private String address;
 
-    @Column(nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "churchId")
+    @ToString.Exclude
+    private Church church;
+
+    @Column
+    private String nickname;
+
+    @Column
     private String refreshToken;
 
     public void updateRefreshToken(String refreshToken) {

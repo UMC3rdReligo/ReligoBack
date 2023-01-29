@@ -36,12 +36,19 @@ public class UserSuccessHandler implements AuthenticationSuccessHandler {
         User user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("가입된 이메일이 존재하지 않습니다."));
 
+        String signYN;
+        //Auth 로그인 시 가입이 되어있는지 체크
+        if(user.getNickname()== null){
+            signYN="가입이 안되어 있습니다.";
+        }else{
+            signYN="가입이 되어 있습니다.";
+        }
         // JWT Token 생성 & Response
         String accessToken = jwtService.createAccessToken(user.getEmail(), user.getId());
         String refreshToken = jwtService.createRefreshToken(user.getEmail());
         user.updateRefreshToken(refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
-        LoginTokenRes loginTokenRes = new LoginTokenRes(accessToken,refreshToken);
+        LoginTokenRes loginTokenRes = new LoginTokenRes(accessToken,refreshToken,signYN);
         new ObjectMapper().writeValue(response.getWriter(), new BaseResponse(loginTokenRes));
     }
 }

@@ -33,6 +33,23 @@ spring:
     username: ${env.RELIGO_DB_USERNAME}
     password: ${env.RELIGO_DB_PASSWORD}
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${env.RELIGO_ACCESS_KEY}
+      secret-key: ${env.RELIGO_SECRET_KEY}
+    s3:
+      bucket: ${env.RELIGO_BUCKET}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
 server:
   port: 8080
   servlet:
@@ -42,12 +59,28 @@ server:
       charset: UTF-8
       enabled: true
 
+servers:
+  - url: https://jmlee.shop/
+    description: Production server
+
 logging:
   level:
-    org:
-      hibernate:
-        SQL: debug
-        type: trace
+    org.springframework:
+      data:
+        elasticsearch:
+          client:
+            WIRE: trace
+    org.hibernate:
+      SQL: debug
+      type: trace
+    com.amazonaws:
+      util:
+        EC2MetadataUtils: error
 
 jwt:
   secret: ${env.RELIGO_JWT_SECRET}
+
+elasticsearch:
+  host: ${env.RELIGO_ELASTICSEARCH_HOST}
+  user: ${env.RELIGO_ELASTICSEARCH_USER}
+  password: ${env.RELIGO_ELASTICSEARCH_PASSWORD}
