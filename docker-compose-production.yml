@@ -18,7 +18,7 @@ services:
   logstash:
     image: "jungminleeee/religo-back-logstash:latest"
     env_file:
-      - ".env"
+      - ".env.production"
     logging:
       driver: "json-file"
       options:
