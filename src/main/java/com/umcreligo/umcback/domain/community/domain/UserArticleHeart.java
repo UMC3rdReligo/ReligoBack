@@ -20,9 +20,9 @@ public class UserArticleHeart
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "article_id")
-    private Article articleId;
+    private Article article;
 }

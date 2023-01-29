@@ -21,7 +21,7 @@ public class Article {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User userID;
+    private User user;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -29,12 +29,14 @@ public class Article {
 
     @ManyToOne
     @JoinColumn(name = "church_id")
-    private Church churchId;
+    private Church church;
 
-    @Column
+    @Lob
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String title;
 
-    @Column
+    @Lob
+    @Column(columnDefinition = "TEXT", nullable = false) // varchar(255) 방지
     private String text;
 
     @Column
