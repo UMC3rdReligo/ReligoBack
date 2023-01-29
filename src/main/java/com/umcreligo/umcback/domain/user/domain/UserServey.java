@@ -25,7 +25,7 @@ public class UserServey {
     @Column(length = 45, nullable = false)
     private String answer;
 
-    @ManyToOne(fetch = FetchType.LAZY, )
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userId",nullable = false)
     private User user;
 
