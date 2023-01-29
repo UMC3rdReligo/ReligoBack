@@ -1,6 +1,7 @@
 package com.umcreligo.umcback.domain.location.domain;
 
 import lombok.*;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
@@ -44,5 +45,13 @@ public class Location {
     public enum LocationStatus {
         ACTIVE,
         DELETED
+    }
+
+    public String getCountryCode() {
+        return StringUtils.left(this.code, 2);
+    }
+
+    public String getCityCode() {
+        return StringUtils.left(this.code, 5);
     }
 }

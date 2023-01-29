@@ -20,51 +20,52 @@ public class JwtExceptionHandler {
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(JwtException e, HttpServletRequest request) {
         log.error("[CustomException] url: {} | errorType: {} | errorMessage: {} | cause Exception: ",
-                request.getRequestURL(), e.getJwtErrorCode(), e.getMessage(), e.getCause());
+            request.getRequestURL(), e.getJwtErrorCode(), e.getMessage(), e.getCause());
 
         return ResponseEntity
-                .status(e.getJwtErrorCode().getHttpStatus())
-                .body(new ErrorResponse(e));
+            .status(e.getJwtErrorCode().getHttpStatus())
+            .body(new ErrorResponse(e));
     }
 
     // Not Support Http Method Exception
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleHttpMethodException(
-            HttpRequestMethodNotSupportedException e,
-            HttpServletRequest request
+        HttpRequestMethodNotSupportedException e,
+        HttpServletRequest request
     ) {
         log.error("[HttpRequestMethodNotSupportedException] " +
-                        "url: {} | errorType: {} | errorMessage: {} | cause Exception: ",
-                request.getRequestURL(), INVALID_HTTP_METHOD, INVALID_HTTP_METHOD.getErrorMessage(), e);
+                "url: {} | errorType: {} | errorMessage: {} | cause Exception: ",
+            request.getRequestURL(), INVALID_HTTP_METHOD, INVALID_HTTP_METHOD.getErrorMessage(), e);
 
         return ResponseEntity
-                .status(INVALID_HTTP_METHOD.getHttpStatus())
-                .body(new ErrorResponse(INVALID_HTTP_METHOD));
+            .status(INVALID_HTTP_METHOD.getHttpStatus())
+            .body(new ErrorResponse(INVALID_HTTP_METHOD));
     }
 
     // Validation Exception
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(
-            MethodArgumentNotValidException e,
-            HttpServletRequest request
+        MethodArgumentNotValidException e,
+        HttpServletRequest request
     ) {
         String validationMessage = Objects.requireNonNull(e.getFieldError()).getDefaultMessage();
         log.error("[MethodArgumentNotValidException] url: {} | errorType: {} | errorMessage: {} | cause Exception: ",
-                request.getRequestURL(), INVALID_VALUE, validationMessage, e);
+            request.getRequestURL(), INVALID_VALUE, validationMessage, e);
 
         JwtException customException = new JwtException(INVALID_VALUE, validationMessage);
         return ResponseEntity
-                .status(INVALID_VALUE.getHttpStatus())
-                .body(new ErrorResponse(customException));
+            .status(INVALID_VALUE.getHttpStatus())
+            .body(new ErrorResponse(customException));
     }
 
     // 이외 Error
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exception(Exception e, HttpServletRequest request) {
         log.error("[Common Exception] url: {} | errorMessage: {}",
-                request.getRequestURL(), e.getMessage());
+            request.getRequestURL(), e.getMessage());
+        e.printStackTrace();
         return ResponseEntity
-                .status(SERVER_INTERNAL_ERROR.getHttpStatus())
-                .body(new ErrorResponse(SERVER_INTERNAL_ERROR));
+            .status(SERVER_INTERNAL_ERROR.getHttpStatus())
+            .body(new ErrorResponse(SERVER_INTERNAL_ERROR));
     }
 }

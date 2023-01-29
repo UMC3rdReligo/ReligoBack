@@ -16,6 +16,10 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 public class UserServey {
+    public static final String QUESTION_CODE_PREFIX = "Q";
+    public static final long WANTED_PLATFORM_QUESTION_NUMBER = 4;
+    public static final long PERSONALITY_QUESTION_NUMBER_MIN = 6;
+    public static final long PERSONALITY_QUESTION_NUMBER_MAX = 11;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +32,8 @@ public class UserServey {
     private String answer;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "userId",nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
+    @ToString.Exclude
     private User user;
 
     @Column
@@ -39,8 +44,12 @@ public class UserServey {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public UserServey(String questionCode , String answer , User user){
-        this.questionCode =questionCode;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public UserServey(String questionCode, String answer, User user) {
+        this.questionCode = questionCode;
         this.answer = answer;
         this.user = user;
     }
