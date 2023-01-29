@@ -50,7 +50,7 @@ jobs:
         run: |
           mkdir .deploy
           cp .env.production docker-compose-production.yml .deploy/
-      - name: Deploy Docker Compose Production Configuration
+      - name: Deploy Main Docker Compose Production Configuration
         uses: easingthemes/ssh-deploy@v2
         env:
           REMOTE_HOST: ${{ secrets.REMOTE_SSH_HOST }}
@@ -60,7 +60,17 @@ jobs:
           SOURCE: .deploy/
           ARGS: -avz --delete
           TARGET: ${{ secrets.REMOTE_TARGET }}
-      - name: Run Docker
+      - name: Deploy Logstash Docker Compose Production Configuration
+        uses: easingthemes/ssh-deploy@v2
+        env:
+          REMOTE_HOST: ${{ secrets.REMOTE_SSH_HOST_LOGSTASH }}
+          REMOTE_PORT: ${{ secrets.REMOTE_SSH_PORT_LOGSTASH }}
+          REMOTE_USER: ${{ secrets.REMOTE_SSH_USERNAME_LOGSTASH }}
+          SSH_PRIVATE_KEY: ${{ secrets.REMOTE_SSH_KEY_LOGSTASH }}
+          SOURCE: .deploy/
+          ARGS: -avz --delete
+          TARGET: ${{ secrets.REMOTE_TARGET_LOGSTASH }}
+      - name: Run Main Docker
         uses: appleboy/ssh-action@master
         env:
           TARGET: ${{ secrets.REMOTE_TARGET }}
@@ -74,5 +84,21 @@ jobs:
           script: |
             cd $TARGET
             docker compose -f docker-compose-production.yml pull
-            docker compose -f docker-compose-production.yml up -d
+            docker compose -f docker-compose-production.yml up -d religo
+            docker image prune -af
+      - name: Run Logstash Docker
+        uses: appleboy/ssh-action@master
+        env:
+          TARGET: ${{ secrets.REMOTE_TARGET_LOGSTASH }}
+        with:
+          host: ${{ secrets.REMOTE_SSH_HOST_LOGSTASH }}
+          port: ${{ secrets.REMOTE_SSH_PORT_LOGSTASH }}
+          username: ${{ secrets.REMOTE_SSH_USERNAME_LOGSTASH }}
+          key: ${{ secrets.REMOTE_SSH_KEY_LOGSTASH }}
+          envs: TARGET
+          script_stop: true
+          script: |
+            cd $TARGET
+            docker compose -f docker-compose-production.yml pull
+            docker compose -f docker-compose-production.yml up -d logstash
             docker image prune -af
