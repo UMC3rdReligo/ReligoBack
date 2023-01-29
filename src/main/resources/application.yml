@@ -59,6 +59,10 @@ server:
       charset: UTF-8
       enabled: true
 
+servers:
+  - url: https://jmlee.shop/
+    description: Production server
+
 logging:
   level:
     org:

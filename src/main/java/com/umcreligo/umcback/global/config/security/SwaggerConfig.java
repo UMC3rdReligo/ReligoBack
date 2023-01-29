@@ -12,6 +12,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -28,7 +29,10 @@ public class SwaggerConfig {
 
     @Bean
     public Docket api() {
+        Server serverLocal = new Server("local", "http://localhost:8080", "for local usages", Collections.emptyList(), Collections.emptyList());
+        Server testServer = new Server("test", "https://jmlee.shop", "for testing", Collections.emptyList(), Collections.emptyList());
         return new Docket(DocumentationType.OAS_30)
+            .servers(serverLocal, testServer)
             .securityContexts(Arrays.asList(securityContext()))
             .securitySchemes(Arrays.asList(apiKey()))
             .select()
