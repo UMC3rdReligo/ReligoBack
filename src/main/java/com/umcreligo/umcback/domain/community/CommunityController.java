@@ -1,5 +1,6 @@
 package com.umcreligo.umcback.domain.community;
 
+import com.amazonaws.Response;
 import com.umcreligo.umcback.domain.community.domain.CommunityType;
 import com.umcreligo.umcback.domain.community.dto.FindArticle;
 import com.umcreligo.umcback.domain.community.dto.SaveArticleReq;
@@ -40,4 +41,12 @@ public class CommunityController {
         }
     }
 
+    @GetMapping("/church")
+    public ResponseEntity<BaseResponse> test(){
+        return ResponseEntity.ok(new BaseResponse<>(communityService.test()));
+    }
+    @GetMapping("/church2")
+    public ResponseEntity<BaseResponse> test2(){
+        return ResponseEntity.ok(new BaseResponse<>(communityService.test2()));
+    }
 }

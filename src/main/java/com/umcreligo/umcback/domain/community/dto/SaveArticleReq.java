@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 @Data
 public class SaveArticleReq {
 
-    private User user;
+    private String email;
 
-    private CommunityType type;
+    private int type;
 
-    private Church church;
+    private String churchId;
 
     private String title;
 
