@@ -15,7 +15,7 @@ public class SaveArticleReq {
 
     private int type;
 
-    private String churchId;
+    private Long churchId;
 
     private String title;
 

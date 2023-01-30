@@ -1,5 +1,8 @@
 package com.umcreligo.umcback.domain.community.service;
 
+import com.umcreligo.umcback.domain.church.repository.ChurchRepository;
+import com.umcreligo.umcback.domain.church.service.ChurchProvider;
+import com.umcreligo.umcback.domain.church.service.ChurchService;
 import com.umcreligo.umcback.domain.community.domain.Article;
 import com.umcreligo.umcback.domain.community.domain.Comment;
 import com.umcreligo.umcback.domain.community.domain.CommunityType;
@@ -8,17 +11,14 @@ import com.umcreligo.umcback.domain.community.dto.SaveArticleReq;
 import com.umcreligo.umcback.domain.community.repository.ArticleRepository;
 import com.umcreligo.umcback.domain.community.repository.CommentRepository;
 import com.umcreligo.umcback.domain.community.repository.UserArticleHeartRepository;
-import com.umcreligo.umcback.domain.user.domain.User;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import com.umcreligo.umcback.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -29,6 +29,8 @@ public class CommunityService {
     private final UserArticleHeartRepository userArticleHeartRepository;
 
     private final UserRepository userRepository;
+
+    private final ChurchRepository churchRepository;
 
     //input : 커뮤니티 타입
     //return :  타입에 따른 커뮤니티 정보 목록
@@ -67,6 +69,10 @@ public class CommunityService {
         article.setText(saveArticleReq.getText());
 
         article.setHeartCount(0);
+
+        //교회 게시글이 아닌 경우 -1을 받고, 데이터베이스에 null값 저장
+        if(saveArticleReq.getChurchId() == -1) article.setChurch(null);
+        else article.setChurch(churchRepository.findById(saveArticleReq.getChurchId()).get());
 
         articleRepository.save(article);
     }
