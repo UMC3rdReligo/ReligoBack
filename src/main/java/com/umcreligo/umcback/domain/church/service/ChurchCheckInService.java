@@ -1,11 +1,10 @@
 package com.umcreligo.umcback.domain.church.service;
 
-import com.umcreligo.umcback.domain.church.dto.SignUpChurchMemberResult;
-import com.umcreligo.umcback.domain.church.dto.SignUpChurchTrialResult;
+import com.umcreligo.umcback.domain.church.dto.SignUpChurchMemberParam;
+import com.umcreligo.umcback.domain.church.dto.SignUpChurchTrialParam;
 
-// TODO: 파라미터 정의, API 구체화
 public interface ChurchCheckInService {
-    SignUpChurchMemberResult signUpMember();
+    void signUpChurchMember(SignUpChurchMemberParam param);
 
-    SignUpChurchTrialResult signUpTrial();
+    void signUpChurchTrial(SignUpChurchTrialParam param);
 }
