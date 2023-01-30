@@ -19,6 +19,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +43,30 @@ public class ChurchProviderImpl implements ChurchProvider {
     private final UserServeyRepository userServeyRepository;
     private final ElasticsearchOperations elasticsearchOperations;
 
+    public List<FindChurchResult> findChurches(List<Long> churchIds) {
+        List<Church> churches = this.churchRepository.findAllWithJoinByIdInAndStatus(churchIds, Church.ChurchStatus.ACTIVE);
+        List<Long> foundIds = churches.stream().map(Church::getId).collect(Collectors.toList());
+        List<ChurchHashTag> hashTags = this.churchHashTagRepository.findAllByChurchIdIn(foundIds);
+        List<ChurchImage> mainImages = this.churchImageRepository.findAllByChurchIdInAndTypeAndStatus(foundIds,
+            ChurchImage.ChurchImageType.MAIN, ChurchImage.ChurchImageStatus.ACTIVE);
+        List<ChurchImage> detailImages = this.churchImageRepository.findAllByChurchIdInAndTypeAndStatus(foundIds,
+            ChurchImage.ChurchImageType.DETAIL, ChurchImage.ChurchImageStatus.ACTIVE);
+
+        return churches.stream().map(church -> {
+            List<ChurchHashTag> myHashTags = hashTags.stream()
+                .filter(churchHashTag -> Objects.equals(churchHashTag.getChurch().getId(), church.getId()))
+                .collect(Collectors.toList());
+            List<ChurchImage> myMainImages = mainImages.stream()
+                .filter(churchImage -> Objects.equals(churchImage.getChurch().getId(), church.getId()))
+                .collect(Collectors.toList());
+            List<ChurchImage> myDetailImages = detailImages.stream()
+                .filter(churchImage -> Objects.equals(churchImage.getChurch().getId(), church.getId()))
+                .collect(Collectors.toList());
+
+            return this.createFindChurchResult(church, myHashTags, myMainImages, myDetailImages);
+        }).collect(Collectors.toList());
+    }
+
     @Override
     public Optional<FindChurchResult> findChurch(Long churchId) {
         try {
@@ -52,12 +77,7 @@ public class ChurchProviderImpl implements ChurchProvider {
             List<ChurchImage> detailImages = this.churchImageRepository.findAllByChurchIdAndTypeAndStatus(church.getId(),
                 ChurchImage.ChurchImageType.DETAIL, ChurchImage.ChurchImageStatus.ACTIVE);
 
-            FindChurchResult result = new FindChurchResult();
-            result.setInfo(church);
-            result.setHashTags(hashTags.stream().map(churchHashTag -> churchHashTag.getHashTag().getCode()).collect(Collectors.toList()));
-            result.setMainImage(mainImages.isEmpty() ? "" : mainImages.get(0).getUrl());
-            result.setDetailImages(detailImages.stream().map(ChurchImage::getUrl).collect(Collectors.toList()));
-            return Optional.of(result);
+            return Optional.of(this.createFindChurchResult(church, hashTags, mainImages, detailImages));
         } catch (NoSuchElementException e) {
             return Optional.empty();
         }
@@ -84,6 +104,7 @@ public class ChurchProviderImpl implements ChurchProvider {
         NativeSearchQuery query = new NativeSearchQueryBuilder()
             .withQuery(
                 boolQuery()
+                    .filter(termQuery("status", Church.ChurchStatus.ACTIVE.name()))
                     // [필수] 같은 시도
                     .filter(prefixQuery("locationcode.keyword", userCountryCode))
                     // 같은 구 (중요도 상)
@@ -102,17 +123,7 @@ public class ChurchProviderImpl implements ChurchProvider {
             .withPageable(Pageable.ofSize(20))
             .build();
 
-        return this.elasticsearchOperations.search(query, ChurchIndexDocument.class).stream()
-            .map(SearchHit::getId).filter(Objects::nonNull)
-            .map(id -> {
-                try {
-                    return this.findChurch(Long.valueOf(id)).orElse(null);
-                } catch (NumberFormatException e) {
-                    return null;
-                }
-            })
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+        return this.elasticsearchChurches(query);
     }
 
     @Override
@@ -123,6 +134,7 @@ public class ChurchProviderImpl implements ChurchProvider {
         String userCityCode = Location.builder().code(userLocationCode).build().getCityCode();
 
         BoolQueryBuilder boolQueryBuilder = boolQuery()
+            .filter(termQuery("status", Church.ChurchStatus.ACTIVE.name()))
             // 같은 시도 (중요도 하)
             .should(constantScoreQuery(prefixQuery("locationcode.keyword", userCountryCode)).boost(2))
             // 같은 구 (중요도 하)
@@ -161,17 +173,7 @@ public class ChurchProviderImpl implements ChurchProvider {
             .withPageable(Pageable.ofSize(10))
             .build();
 
-        return this.elasticsearchOperations.search(query, ChurchIndexDocument.class).stream()
-            .map(SearchHit::getId).filter(Objects::nonNull)
-            .map(id -> {
-                try {
-                    return this.findChurch(Long.valueOf(id)).orElse(null);
-                } catch (NumberFormatException e) {
-                    return null;
-                }
-            })
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+        return this.elasticsearchChurches(query);
     }
 
     private String calcUserPersonalityPlatformGroupCode(List<UserServey> userServeys) {
@@ -216,5 +218,30 @@ public class ChurchProviderImpl implements ChurchProvider {
         } else {
             return Platform.GROUP_PC;
         }
+    }
+
+    private List<FindChurchResult> elasticsearchChurches(Query query) {
+        return this.findChurches(this.elasticsearchOperations.search(query, ChurchIndexDocument.class).stream()
+            .map(SearchHit::getId)
+            .filter(Objects::nonNull)
+            .map(id -> {
+                try {
+                    return Long.valueOf(id);
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList()));
+    }
+
+    private FindChurchResult createFindChurchResult(Church church, List<ChurchHashTag> hashTags,
+                                                    List<ChurchImage> mainImages, List<ChurchImage> detailImages) {
+        FindChurchResult result = new FindChurchResult();
+        result.setInfo(church);
+        result.setHashTags(hashTags.stream().map(churchHashTag -> churchHashTag.getHashTag().getCode()).collect(Collectors.toList()));
+        result.setMainImage(mainImages.isEmpty() ? "" : mainImages.get(0).getUrl());
+        result.setDetailImages(detailImages.stream().map(ChurchImage::getUrl).collect(Collectors.toList()));
+        return result;
     }
 }

@@ -24,4 +24,5 @@ public class ChurchIndexDocument {
     private String hashtags;
     private String locationcode;
     private String platformcode;
+    private String status;
 }

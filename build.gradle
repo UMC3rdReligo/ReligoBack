@@ -31,6 +31,7 @@ dependencies {
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'me.paulschwarz:spring-dotenv:2.5.4'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'mysql:mysql-connector-java'
