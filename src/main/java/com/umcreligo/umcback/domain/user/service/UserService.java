@@ -10,7 +10,7 @@ import com.umcreligo.umcback.domain.user.domain.User;
 import com.umcreligo.umcback.domain.user.domain.UserHashTag;
 import com.umcreligo.umcback.domain.user.domain.UserServey;
 import com.umcreligo.umcback.domain.user.dto.SignUpReq;
-import com.umcreligo.umcback.domain.user.dto.UserChurchRes;
+import com.umcreligo.umcback.domain.user.dto.UserInfoRes;
 import com.umcreligo.umcback.domain.user.repository.UserHashTagRepository;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import com.umcreligo.umcback.domain.user.repository.UserServeyRepository;
@@ -88,22 +88,25 @@ public class UserService {
         user.deleteRefreshToken();
     }
 
-    public UserChurchRes findChurchbyUser() throws NoSuchElementException {
+    public UserInfoRes findInfoByUser() throws NoSuchElementException {
         User user = userRepository.findWithJoinById(jwtService.getId()).orElseThrow();
-        UserChurchRes userChurchRes = createUserChurch(user);
-        return userChurchRes;
+        UserInfoRes UserInfoRes = createUserInfo(user);
+        return UserInfoRes;
     }
 
-    private UserChurchRes createUserChurch(User user){
-        UserChurchRes userChurchRes = new UserChurchRes();
-        userChurchRes.setName(user.getName()==null ? "" : user.getName());
-        userChurchRes.setNickname(user.getNickname()==null ? "" : user.getNickname());
-        userChurchRes.setAddress(user.getAddress()==null ? "" : user.getAddress());
-        userChurchRes.setLocationCode(user.getLocation()==null ? "" : user.getLocation().getCode());
-        userChurchRes.setChurchId(user.getChurch()==null ? 0 : user.getChurch().getId());
-        userChurchRes.setChurchName(user.getChurch()==null ? "" : user.getChurch().getName());
-        userChurchRes.setChurchAddress(user.getChurch()==null ? "" : user.getChurch().getAddress());
-        return userChurchRes;
+    private UserInfoRes createUserInfo(User user){
+        UserInfoRes UserInfoRes = new UserInfoRes();
+        UserInfoRes.setName(user.getName()==null ? "" : user.getName());
+        UserInfoRes.setNickname(user.getNickname()==null ? "" : user.getNickname());
+        UserInfoRes.setAddress(user.getAddress()==null ? "" : user.getAddress());
+        UserInfoRes.setLocationCode(user.getLocation()==null ? "" : user.getLocation().getCode());
+        UserInfoRes.setUserAddress1(user.getLocation()==null ? "" : user.getLocation().getAddress1());
+        UserInfoRes.setUserAddress2(user.getLocation()==null ? "" : user.getLocation().getAddress2());
+        UserInfoRes.setUserAddress3(user.getLocation()==null ? "" : user.getLocation().getAddress3());
+        UserInfoRes.setChurchId(user.getChurch()==null ? 0 : user.getChurch().getId());
+        UserInfoRes.setChurchName(user.getChurch()==null ? "" : user.getChurch().getName());
+        UserInfoRes.setChurchAddress(user.getChurch()==null ? "" : user.getChurch().getAddress());
+        return UserInfoRes;
 
     }
 
