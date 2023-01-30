@@ -58,6 +58,9 @@
           "ignore_above": 256
         }
       }
+    },
+    "status": {
+      "type": "keyword"
     }
   }
 }

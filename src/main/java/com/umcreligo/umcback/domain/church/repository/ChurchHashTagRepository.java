@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ChurchHashTagRepository extends JpaRepository<ChurchHashTag, Long> {
     List<ChurchHashTag> findAllByChurchId(Long churchId);
+
+    List<ChurchHashTag> findAllByChurchIdIn(List<Long> churchId);
 }
