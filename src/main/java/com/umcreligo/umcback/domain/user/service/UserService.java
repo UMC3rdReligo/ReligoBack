@@ -91,30 +91,22 @@ public class UserService {
     }
 
     public UserChurchRes findChurchbyUser() throws NoSuchElementException {
-        User user = userRepository.findWithJoinById(jwtService.getId());
-        FindChurchResult findChurchResult = Optional.of(churchProvider.findChurch(user.getChurch().getId()).orElseThrow())
-            .orElseThrow();
-        Map<String, Object> info = new HashMap<>();
-        info.put("churchAddress",findChurchResult.getInfo().getAddress());
-        info.put("churchCreatedAt",findChurchResult.getInfo().getCreatedAt());
-        info.put("churchHomepage",findChurchResult.getInfo().getHomepageURL());
-        info.put("introduction",findChurchResult.getInfo().getIntroduction());
-        info.put("locationAddress1",findChurchResult.getInfo().getLocation().getAddress1());
-        info.put("locationAddress2",findChurchResult.getInfo().getLocation().getAddress2());
-        info.put("locationAddress3",findChurchResult.getInfo().getLocation().getAddress3());
-        info.put("minister",findChurchResult.getInfo().getMinister());
-        info.put("phoneNum",findChurchResult.getInfo().getPhoneNum());
-        info.put("platformName",findChurchResult.getInfo().getPlatform().getName());
-        info.put("schedule",findChurchResult.getInfo().getSchedule());
-        UserChurchRes userChurchRes = new UserChurchRes(
-            user.getName(),
-            user.getNickname(),
-            info,
-            findChurchResult.getHashTags(),
-            findChurchResult.getMainImage(),
-            findChurchResult.getDetailImages());
-
+        User user = userRepository.findWithJoinById(jwtService.getId()).orElseThrow();
+        UserChurchRes userChurchRes = createUserChurch(user);
         return userChurchRes;
+    }
+
+    private UserChurchRes createUserChurch(User user){
+        UserChurchRes userChurchRes = new UserChurchRes();
+        userChurchRes.setName(user.getName()==null ? "" : user.getName());
+        userChurchRes.setNickname(user.getNickname()==null ? "" : user.getNickname());
+        userChurchRes.setAddress(user.getAddress()==null ? "" : user.getAddress());
+        userChurchRes.setLocationCode(user.getLocation()==null ? "" : user.getLocation().getCode());
+        userChurchRes.setChurchId(user.getChurch()==null ? 0 : user.getChurch().getId());
+        userChurchRes.setChurchName(user.getChurch()==null ? "" : user.getChurch().getName());
+        userChurchRes.setChurchAddress(user.getChurch()==null ? "" : user.getChurch().getAddress());
+        return userChurchRes;
+
     }
 
 

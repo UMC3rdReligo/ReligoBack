@@ -13,6 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findById(String id);
 
-    @EntityGraph(attributePaths = {"church"}, type = EntityGraph.EntityGraphType.LOAD)
-    User findWithJoinById(Long UserId);
+    @EntityGraph(attributePaths = {"church","location"}, type = EntityGraph.EntityGraphType.LOAD)
+    Optional<User> findWithJoinById(Long UserId);
 }
