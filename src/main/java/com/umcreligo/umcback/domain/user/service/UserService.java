@@ -10,7 +10,7 @@ import com.umcreligo.umcback.domain.user.domain.User;
 import com.umcreligo.umcback.domain.user.domain.UserHashTag;
 import com.umcreligo.umcback.domain.user.domain.UserServey;
 import com.umcreligo.umcback.domain.user.dto.SignUpReq;
-import com.umcreligo.umcback.domain.user.dto.UserChurchRes;
+import com.umcreligo.umcback.domain.user.dto.UserInfoRes;
 import com.umcreligo.umcback.domain.user.repository.UserHashTagRepository;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import com.umcreligo.umcback.domain.user.repository.UserServeyRepository;
@@ -33,8 +33,6 @@ public class UserService {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final ChurchProvider churchProvider;
 
     private final HashTagRepository hashTagRepository;
 
@@ -90,31 +88,26 @@ public class UserService {
         user.deleteRefreshToken();
     }
 
-    public UserChurchRes findChurchbyUser() throws NoSuchElementException {
-        User user = userRepository.findWithJoinById(jwtService.getId());
-        FindChurchResult findChurchResult = Optional.of(churchProvider.findChurch(user.getChurch().getId()).orElseThrow())
-            .orElseThrow();
-        Map<String, Object> info = new HashMap<>();
-        info.put("churchAddress",findChurchResult.getInfo().getAddress());
-        info.put("churchCreatedAt",findChurchResult.getInfo().getCreatedAt());
-        info.put("churchHomepage",findChurchResult.getInfo().getHomepageURL());
-        info.put("introduction",findChurchResult.getInfo().getIntroduction());
-        info.put("locationAddress1",findChurchResult.getInfo().getLocation().getAddress1());
-        info.put("locationAddress2",findChurchResult.getInfo().getLocation().getAddress2());
-        info.put("locationAddress3",findChurchResult.getInfo().getLocation().getAddress3());
-        info.put("minister",findChurchResult.getInfo().getMinister());
-        info.put("phoneNum",findChurchResult.getInfo().getPhoneNum());
-        info.put("platformName",findChurchResult.getInfo().getPlatform().getName());
-        info.put("schedule",findChurchResult.getInfo().getSchedule());
-        UserChurchRes userChurchRes = new UserChurchRes(
-            user.getName(),
-            user.getNickname(),
-            info,
-            findChurchResult.getHashTags(),
-            findChurchResult.getMainImage(),
-            findChurchResult.getDetailImages());
+    public UserInfoRes findInfoByUser() throws NoSuchElementException {
+        User user = userRepository.findWithJoinById(jwtService.getId()).orElseThrow();
+        UserInfoRes UserInfoRes = createUserInfo(user);
+        return UserInfoRes;
+    }
 
-        return userChurchRes;
+    private UserInfoRes createUserInfo(User user){
+        UserInfoRes UserInfoRes = new UserInfoRes();
+        UserInfoRes.setName(user.getName()==null ? "" : user.getName());
+        UserInfoRes.setNickname(user.getNickname()==null ? "" : user.getNickname());
+        UserInfoRes.setAddress(user.getAddress()==null ? "" : user.getAddress());
+        UserInfoRes.setLocationCode(user.getLocation()==null ? "" : user.getLocation().getCode());
+        UserInfoRes.setUserAddress1(user.getLocation()==null ? "" : user.getLocation().getAddress1());
+        UserInfoRes.setUserAddress2(user.getLocation()==null ? "" : user.getLocation().getAddress2());
+        UserInfoRes.setUserAddress3(user.getLocation()==null ? "" : user.getLocation().getAddress3());
+        UserInfoRes.setChurchId(user.getChurch()==null ? 0 : user.getChurch().getId());
+        UserInfoRes.setChurchName(user.getChurch()==null ? "" : user.getChurch().getName());
+        UserInfoRes.setChurchAddress(user.getChurch()==null ? "" : user.getChurch().getAddress());
+        return UserInfoRes;
+
     }
 
 

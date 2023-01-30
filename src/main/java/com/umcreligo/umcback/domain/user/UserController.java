@@ -2,7 +2,7 @@ package com.umcreligo.umcback.domain.user;
 
 import com.umcreligo.umcback.domain.user.dto.LoginTokenRes;
 import com.umcreligo.umcback.domain.user.dto.SignUpReq;
-import com.umcreligo.umcback.domain.user.dto.UserChurchRes;
+import com.umcreligo.umcback.domain.user.dto.UserInfoRes;
 import com.umcreligo.umcback.domain.user.service.UserService;
 import com.umcreligo.umcback.global.config.BaseResponse;
 import com.umcreligo.umcback.global.config.BaseResponseStatus;
@@ -40,10 +40,10 @@ public class UserController {
         return new BaseResponse(BaseResponseStatus.SUCCESS);
     }
 
-    @GetMapping("/user/church")
-    public ResponseEntity<BaseResponse<UserChurchRes>> ChurchbyUser(){
+    @GetMapping("/user/info")
+    public ResponseEntity<BaseResponse<UserInfoRes>> ChurchbyUser(){
         try {
-            return ResponseEntity.ok(new BaseResponse<>(this.userService.findChurchbyUser()));
+            return ResponseEntity.ok(new BaseResponse<>(this.userService.findInfoByUser()));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
         }
