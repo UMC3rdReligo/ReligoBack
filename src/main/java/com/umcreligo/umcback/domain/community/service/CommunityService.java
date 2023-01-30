@@ -4,6 +4,7 @@ import com.umcreligo.umcback.domain.community.domain.Article;
 import com.umcreligo.umcback.domain.community.domain.Comment;
 import com.umcreligo.umcback.domain.community.domain.CommunityType;
 import com.umcreligo.umcback.domain.community.dto.FindArticle;
+import com.umcreligo.umcback.domain.community.dto.SaveArticleReq;
 import com.umcreligo.umcback.domain.community.repository.ArticleRepository;
 import com.umcreligo.umcback.domain.community.repository.CommentRepository;
 import com.umcreligo.umcback.domain.community.repository.UserArticleHeartRepository;
@@ -45,8 +46,15 @@ public class CommunityService {
     }
 
     //글쓰기
-    public void saveArticle(){
-
+    public void saveArticle(SaveArticleReq saveArticleReq){
+        Article article = new Article();
+        article.setChurch(saveArticleReq.getChurch());
+        article.setUser(saveArticleReq.getUser());
+        article.setText(saveArticleReq.getText());
+        article.setTitle(saveArticleReq.getTitle());
+        article.setType(saveArticleReq.getType());
+        articleRepository.save(article);
     }
+
 
 }
