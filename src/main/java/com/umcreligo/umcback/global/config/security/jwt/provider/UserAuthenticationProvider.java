@@ -25,16 +25,12 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = authentication.getName();
         String password = (String) authentication.getCredentials();
-        System.out.println("로그인 성공?");
-        System.out.println("email :" +email+" password:" + password);
 
         PrincipalUserDetails userDetails = (PrincipalUserDetails) userDetailsService.loadUserByUsername(email);
-        System.out.println("로그인 성공?");
         // 비밀번호 확인
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
-        System.out.println("로그인 성공?");
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 

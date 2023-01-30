@@ -33,8 +33,6 @@ public class UserService {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final ChurchProvider churchProvider;
 
     private final HashTagRepository hashTagRepository;
 
