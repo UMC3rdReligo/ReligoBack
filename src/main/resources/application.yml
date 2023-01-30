@@ -20,11 +20,6 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # 코드에서 사용한 필드명 그대로 DB에 저장한다
       use-new-id-generator-mappings: false # 기본키 생성 전략이 AUTO인 경우 IDENTITY 전략을 따라간다
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        use_sql_comments: true
     database: mysql
 
   datasource:
@@ -70,12 +65,14 @@ logging:
         elasticsearch:
           client:
             WIRE: trace
-    org.hibernate:
-      SQL: debug
-      type: trace
     com.amazonaws:
       util:
         EC2MetadataUtils: error
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
 
 jwt:
   secret: ${env.RELIGO_JWT_SECRET}
