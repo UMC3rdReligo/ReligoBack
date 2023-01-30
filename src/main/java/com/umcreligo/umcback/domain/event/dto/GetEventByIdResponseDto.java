@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 public class GetEventByIdResponseDto {
 
+    private long eventId; // pk
     private String eventName;
     private LocalDateTime eventDate;
     private String eventIntroduction;
@@ -18,6 +19,7 @@ public class GetEventByIdResponseDto {
     private String location;
 
     public GetEventByIdResponseDto(Event event) {
+        this.eventId = event.getId();
         this.eventName = event.getEventName();
         this.eventDate = event.getEventDate();
         this.eventIntroduction = event.getEventIntroduction();

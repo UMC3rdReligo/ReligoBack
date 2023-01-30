@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class EventDetails {
+
+    private long eventId;
     private String eventName;
     private LocalDateTime eventDate;
     private String eventIntroduction;
@@ -20,6 +22,7 @@ public class EventDetails {
     private String description;
 
     public EventDetails(Event event) {
+        this.eventId = event.getId();
         this.eventName = event.getEventName();
         this.eventDate = event.getEventDate();
         this.eventIntroduction = event.getEventIntroduction();
