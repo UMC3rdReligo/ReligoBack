@@ -2,6 +2,8 @@ package com.umcreligo.umcback.domain.community.domain;
 
 import com.umcreligo.umcback.domain.user.domain.User;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,8 +32,10 @@ public class Comment{
     private String text;
 
     @Column
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 }
