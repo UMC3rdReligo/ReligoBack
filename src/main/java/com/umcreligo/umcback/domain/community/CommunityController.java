@@ -1,11 +1,9 @@
 package com.umcreligo.umcback.domain.community;
 
-import com.amazonaws.Response;
 import com.umcreligo.umcback.domain.community.domain.CommunityType;
-import com.umcreligo.umcback.domain.community.dto.FindArticle;
+import com.umcreligo.umcback.domain.community.dto.FindArticleRes;
 import com.umcreligo.umcback.domain.community.dto.SaveArticleReq;
 import com.umcreligo.umcback.domain.community.service.CommunityService;
-import com.umcreligo.umcback.domain.user.dto.UserChurchRes;
 import com.umcreligo.umcback.global.config.BaseResponse;
 import com.umcreligo.umcback.global.config.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +20,7 @@ public class CommunityController {
     private final CommunityService communityService;
 
     @GetMapping("/community/article/{communityType}")
-    public ResponseEntity<BaseResponse<List<FindArticle>>> getAllArticle(@PathVariable("communityType")CommunityType type){
+    public ResponseEntity<BaseResponse<List<FindArticleRes>>> getAllArticle(@PathVariable("communityType")CommunityType type){
         try {
             return ResponseEntity.ok(new BaseResponse<>(this.communityService.findCommunities(type)));
         } catch (NoSuchElementException e) {

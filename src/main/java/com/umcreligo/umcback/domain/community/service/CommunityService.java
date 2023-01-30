@@ -1,18 +1,15 @@
 package com.umcreligo.umcback.domain.community.service;
 
 import com.umcreligo.umcback.domain.church.repository.ChurchRepository;
-import com.umcreligo.umcback.domain.church.service.ChurchProvider;
-import com.umcreligo.umcback.domain.church.service.ChurchService;
 import com.umcreligo.umcback.domain.community.domain.Article;
 import com.umcreligo.umcback.domain.community.domain.Comment;
 import com.umcreligo.umcback.domain.community.domain.CommunityType;
-import com.umcreligo.umcback.domain.community.dto.FindArticle;
+import com.umcreligo.umcback.domain.community.dto.FindArticleRes;
 import com.umcreligo.umcback.domain.community.dto.SaveArticleReq;
 import com.umcreligo.umcback.domain.community.repository.ArticleRepository;
 import com.umcreligo.umcback.domain.community.repository.CommentRepository;
 import com.umcreligo.umcback.domain.community.repository.UserArticleHeartRepository;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
-import com.umcreligo.umcback.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,10 +31,10 @@ public class CommunityService {
 
     //input : 커뮤니티 타입
     //return :  타입에 따른 커뮤니티 정보 목록
-    public List<FindArticle> findCommunities(CommunityType type){
+    public List<FindArticleRes> findCommunities(CommunityType type){
         int FINDARTICLE_COUNT = 20; // 반환할 개수
         List<Article> allArticle = articleRepository.findArticleByTypeOrderByCreatedAtDesc(type);
-        List<FindArticle> resultList = new ArrayList<>();
+        List<FindArticleRes> resultList = new ArrayList<>();
 
         if(allArticle.size() < 20){
             FINDARTICLE_COUNT = allArticle.size();
@@ -47,7 +44,7 @@ public class CommunityService {
             Article article = allArticle.get(i);
             List<Comment> commentList = commentRepository.findCommentByArticle(article.getId());
             int heartCnt = article.getHeartCount();
-            FindArticle findArticle = new FindArticle();
+            FindArticleRes findArticle = new FindArticleRes();
             findArticle.setText(article.getText());
             findArticle.setType(typeToInt(article.getType()));
             findArticle.setComments(commentList);
@@ -97,7 +94,7 @@ public class CommunityService {
     public SaveArticleReq test(){
         return new SaveArticleReq();
     }
-    public FindArticle test2(){
-        return new FindArticle();
+    public FindArticleRes test2(){
+        return new FindArticleRes();
     }
 }
