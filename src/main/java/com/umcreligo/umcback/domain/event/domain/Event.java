@@ -1,13 +1,13 @@
 package com.umcreligo.umcback.domain.event.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -20,13 +20,23 @@ public class Event {
 
     private String eventName;
 
-    private String eventDate;
+    private LocalDateTime eventDate;
 
     private String eventIntroduction;
 
-    public Event(String eventName, String eventDate, String eventIntroduction) {
+    private String participation; // 참여대상
+
+    private String location;
+
+    private long churchId;
+
+    @Builder
+    public Event(String eventName, LocalDateTime eventDate, String eventIntroduction, String participation, String location, long churchId) {
         this.eventName = eventName;
         this.eventDate = eventDate;
         this.eventIntroduction = eventIntroduction;
+        this.participation = participation;
+        this.location = location;
+        this.churchId = churchId;
     }
 }
