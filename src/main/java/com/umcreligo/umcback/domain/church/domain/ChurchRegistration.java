@@ -2,8 +2,10 @@ package com.umcreligo.umcback.domain.church.domain;
 
 import com.umcreligo.umcback.domain.user.domain.User;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,6 +31,18 @@ public class ChurchRegistration {
     private Church church;
 
     @Column(length = 45, nullable = false)
+    private String name;
+
+    @Column
+    private LocalDate birthday;
+
+    @Column(length = 45, nullable = false)
+    private String phoneNum;
+
+    @Column(length = 300, nullable = false)
+    private String address;
+
+    @Column(length = 45, nullable = false)
     private String referee;
 
     @Lob
@@ -39,5 +53,6 @@ public class ChurchRegistration {
     private LocalDateTime scheduledDateTime;
 
     @Column
+    @CreationTimestamp
     private LocalDateTime createdAt;
 }

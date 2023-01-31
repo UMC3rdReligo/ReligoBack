@@ -2,6 +2,7 @@ package com.umcreligo.umcback.domain.church.domain;
 
 import com.umcreligo.umcback.domain.hashtag.domain.HashTag;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -29,5 +30,6 @@ public class ChurchHashTag {
     private HashTag hashTag;
 
     @Column
+    @CreationTimestamp
     private LocalDateTime createdAt;
 }
