@@ -13,4 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = {"church", "location"}, type = EntityGraph.EntityGraphType.LOAD)
     Optional<User> findWithJoinByIdAndStatus(Long UserId, User.UserStatus status);
+
+    boolean existsByNicknameAndStatus(String nickName, User.UserStatus status);
 }

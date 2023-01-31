@@ -14,6 +14,8 @@ import com.umcreligo.umcback.domain.user.dto.UserInfoRes;
 import com.umcreligo.umcback.domain.user.repository.UserHashTagRepository;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import com.umcreligo.umcback.domain.user.repository.UserServeyRepository;
+import com.umcreligo.umcback.global.config.BaseException;
+import com.umcreligo.umcback.global.config.BaseResponseStatus;
 import com.umcreligo.umcback.global.config.security.jwt.JwtService;
 import com.umcreligo.umcback.global.config.security.jwt.exception.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -107,7 +109,12 @@ public class UserService {
         UserInfoRes.setChurchName(user.getChurch()==null ? "" : user.getChurch().getName());
         UserInfoRes.setChurchAddress(user.getChurch()==null ? "" : user.getChurch().getAddress());
         return UserInfoRes;
+    }
 
+    public void checkNickName(String nickName) throws BaseException{
+        if(userRepository.existsByNicknameAndStatus(nickName, User.UserStatus.ACTIVE)){
+            throw new BaseException(BaseResponseStatus.NICKNAME_DUPLICATE);
+        }
     }
 
 
