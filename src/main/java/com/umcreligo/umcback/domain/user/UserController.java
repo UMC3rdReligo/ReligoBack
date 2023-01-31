@@ -37,9 +37,9 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public BaseResponse logout() {
+    public ResponseEntity<BaseResponse> logout() {
         userService.logout();
-        return new BaseResponse(BaseResponseStatus.SUCCESS);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
     }
 
     @GetMapping("/info")
