@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +17,7 @@ public class FindArticleRes {
 
     private String writer;
 
-    private int type;
+    private String type;
 
     private String title;
 
@@ -24,6 +25,7 @@ public class FindArticleRes {
 
     private int heartCnt;
 
-    private List<Comment> comments;
+    private Map<String,Object> comments;
+
 
 }

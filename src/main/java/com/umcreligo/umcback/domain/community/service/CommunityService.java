@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -29,27 +31,107 @@ public class CommunityService {
 
     private final ChurchRepository churchRepository;
 
-    //input : 커뮤니티 타입
-    //return :  타입에 따른 커뮤니티 정보 목록
-    public List<FindArticleRes> findCommunities(CommunityType type){
-        int FINDARTICLE_COUNT = 20; // 반환할 개수
-        List<Article> allArticle = articleRepository.findArticleByTypeOrderByCreatedAtDesc(type);
+    private int FINDARTICLE_COUNT = 20;
+    //전체 커뮤니티 내용 Type = TOTAL
+    public List<FindArticleRes> findAllArticles(){
+        List<Article> allArticles = articleRepository.findArticleByTypeOrderByCreatedAtDesc(CommunityType.TOTAL);
         List<FindArticleRes> resultList = new ArrayList<>();
 
-        if(allArticle.size() < 20){
-            FINDARTICLE_COUNT = allArticle.size();
+        if(allArticles.size() < 20){
+            FINDARTICLE_COUNT = allArticles.size();
+        }
+        for(int i = 0 ; i < FINDARTICLE_COUNT ; i++){
+            FindArticleRes findArticleRes = new FindArticleRes();
+
+            Article article = allArticles.get(i);
+            List<Comment> commentList = commentRepository.findCommentByArticleId(article.getId());
+
+            findArticleRes.setText(article.getText());
+            findArticleRes.setType(typeToString(article.getType()));
+            findArticleRes.setHeartCnt(article.getHeartCount());
+            findArticleRes.setArticleId(article.getId());
+            findArticleRes.setWriter(article.getUser().getNickname());
+            findArticleRes.setTitle(article.getTitle());
+
+
+            //이름, 작성시간, 내용
+            Map<String,Object> commentMap = new HashMap<>();
+            for(Comment comment:commentList){
+                commentMap.put("name",comment.getUser().getNickname());
+                commentMap.put("text",comment.getText());
+                commentMap.put("createdAt",comment.getCreatedAt());
+            }
+            findArticleRes.setComments(commentMap);
+
+            resultList.add(findArticleRes);
+        }
+            return resultList;
+    }
+    public List<FindArticleRes> findChurchArticles(Long churchid){
+        List<Article> allArticles = articleRepository.findArticleByTypeAndChurchIdOrderByCreatedAtDesc(CommunityType.CHURCH,churchid);
+        List<FindArticleRes> resultList = new ArrayList<>();
+
+        if(allArticles.size() < 20){
+            FINDARTICLE_COUNT = allArticles.size();
         }
 
         for(int i = 0 ; i < FINDARTICLE_COUNT ; i++){
-            Article article = allArticle.get(i);
-            List<Comment> commentList = commentRepository.findCommentByArticle(article.getId());
-            int heartCnt = article.getHeartCount();
-            FindArticleRes findArticle = new FindArticleRes();
-            findArticle.setText(article.getText());
-            findArticle.setType(typeToInt(article.getType()));
-            findArticle.setComments(commentList);
-            findArticle.setHeartCnt(article.getHeartCount());
-            resultList.add(findArticle);
+            FindArticleRes findArticleRes = new FindArticleRes();
+
+            Article article = allArticles.get(i);
+            List<Comment> commentList = commentRepository.findCommentByArticleId(article.getId());
+
+            findArticleRes.setText(article.getText());
+            findArticleRes.setType(typeToString(article.getType()));
+            findArticleRes.setHeartCnt(article.getHeartCount());
+            findArticleRes.setArticleId(article.getId());
+            findArticleRes.setWriter(article.getUser().getNickname());
+            findArticleRes.setTitle(article.getTitle());
+
+            //이름, 작성시간, 내용
+            Map<String,Object> commentMap = new HashMap<>();
+            for(Comment comment:commentList){
+                commentMap.put("name",comment.getUser().getNickname());
+                commentMap.put("text",comment.getText());
+                commentMap.put("createdAt",comment.getCreatedAt());
+            }
+            findArticleRes.setComments(commentMap);
+
+            resultList.add(findArticleRes);
+        }
+        return resultList;
+    }
+    public List<FindArticleRes> findPlatformArticles(String plaformCode){
+        List<Article> allArticles = articleRepository.findArticleByTypeOrderByCreatedAtDesc(stringToType(plaformCode));
+        List<FindArticleRes> resultList = new ArrayList<>();
+
+        if(allArticles.size() < 20){
+            FINDARTICLE_COUNT = allArticles.size();
+        }
+        for(int i = 0 ; i < FINDARTICLE_COUNT ; i++){
+            FindArticleRes findArticleRes = new FindArticleRes();
+
+            Article article = allArticles.get(i);
+            List<Comment> commentList = commentRepository.findCommentByArticleId(article.getId());
+
+            findArticleRes.setText(article.getText());
+            findArticleRes.setType(typeToString(article.getType()));
+            findArticleRes.setHeartCnt(article.getHeartCount());
+            findArticleRes.setArticleId(article.getId());
+            findArticleRes.setWriter(article.getUser().getNickname());
+            findArticleRes.setTitle(article.getTitle());
+
+
+            //이름, 작성시간, 내용
+            Map<String,Object> commentMap = new HashMap<>();
+            for(Comment comment:commentList){
+                commentMap.put("name",comment.getUser().getNickname());
+                commentMap.put("text",comment.getText());
+                commentMap.put("createdAt",comment.getCreatedAt());
+            }
+            findArticleRes.setComments(commentMap);
+
+            resultList.add(findArticleRes);
         }
         return resultList;
     }
@@ -59,7 +141,7 @@ public class CommunityService {
         Article article = new Article();
         article.setTitle(saveArticleReq.getTitle());
 
-        article.setType(intToType(saveArticleReq.getType()));
+        article.setType(stringToType(saveArticleReq.getType()));
 
         article.setUser(userRepository.findByEmail(saveArticleReq.getEmail()).get());
 
@@ -74,21 +156,48 @@ public class CommunityService {
         articleRepository.save(article);
     }
 
-    public int typeToInt(CommunityType type){
-        if(type == CommunityType.CHURCH)
-            return 1;
-        else if(type == CommunityType.PLATFORM)
-            return 2;
-        else return 3;
+    public CommunityType stringToType(String type){
+        if(type == "church")
+            return CommunityType.CHURCH;
+        else if(type == "total")
+            return CommunityType.TOTAL;
+        else if(type == "PA1")
+            return CommunityType.PA1;
+        else if(type == "PA2")
+            return CommunityType.PA2;
+        else if(type == "PA3")
+            return CommunityType.PA3;
+        else if(type == "PB1")
+            return CommunityType.PB1;
+        else if(type == "PB2")
+            return CommunityType.PB2;
+        else if(type == "PB3")
+            return CommunityType.PB3;
+        else
+            return CommunityType.PC1;
     }
 
-    public CommunityType intToType(int type){
-        if(type == 1)
-            return CommunityType.CHURCH;
-        else if(type == 2)
-            return CommunityType.PLATFORM;
-        else return CommunityType.TOTAL;
+    public String typeToString(CommunityType type){
+        if(type == CommunityType.CHURCH)
+            return "church";
+        else if(type == CommunityType.TOTAL)
+            return "total";
+        else if(type == CommunityType.PA1)
+            return "PA1";
+        else if(type == CommunityType.PA2)
+            return "PA2";
+        else if(type == CommunityType.PA3)
+            return "PA3";
+        else if(type == CommunityType.PB1)
+            return "PB1";
+        else if(type == CommunityType.PB2)
+            return "PB2";
+        else if(type == CommunityType.PB3)
+            return "PB3";
+        else
+            return "PC1";
     }
+
 
     //DTO JSON 확인용
     public SaveArticleReq test(){

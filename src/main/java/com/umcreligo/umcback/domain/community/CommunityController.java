@@ -1,5 +1,6 @@
 package com.umcreligo.umcback.domain.community;
 
+import com.umcreligo.umcback.domain.church.repository.PlatformRepository;
 import com.umcreligo.umcback.domain.community.domain.CommunityType;
 import com.umcreligo.umcback.domain.community.dto.FindArticleRes;
 import com.umcreligo.umcback.domain.community.dto.SaveArticleReq;
@@ -18,19 +19,39 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class CommunityController {
     private final CommunityService communityService;
+    private final PlatformRepository platformRepository;
 
-    @GetMapping("/community/article/{communityType}")
-    public ResponseEntity<BaseResponse<List<FindArticleRes>>> getAllArticle(@PathVariable("communityType")CommunityType type){
+    @GetMapping("/community/article/all")
+    public ResponseEntity<BaseResponse<List<FindArticleRes>>> getAllArticle(){
         try {
-            return ResponseEntity.ok(new BaseResponse<>(this.communityService.findCommunities(type)));
+            return ResponseEntity.ok(new BaseResponse<>(this.communityService.findAllArticles()));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
+    }
+    @GetMapping("/community/article/church/{churchid}")
+    public ResponseEntity<BaseResponse<List<FindArticleRes>>> getChurchArticle(@PathVariable("churchid")Long id){
+        try {
+            return ResponseEntity.ok(new BaseResponse<>(this.communityService.findChurchArticles(id)));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
+    }
+    @GetMapping("/community/article/platform/{platformCode}")
+    public ResponseEntity<BaseResponse<List<FindArticleRes>>> getPlatformArticle(@PathVariable("platformCode") String code){
+        try {
+            return ResponseEntity.ok(new BaseResponse<>(this.communityService.findPlatformArticles(code)));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
         }
     }
 
 
+
+
+
     @PostMapping("/community/article/new")
-    public ResponseEntity<BaseResponse<BaseResponseStatus>> getAllArticle(@RequestBody SaveArticleReq saveArticleReq){
+    public ResponseEntity<BaseResponse<BaseResponseStatus>> saveArticle(@RequestBody SaveArticleReq saveArticleReq){
         try {
             communityService.saveArticle(saveArticleReq);
             return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));

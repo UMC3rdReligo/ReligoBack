@@ -12,4 +12,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     //    PLATFORM = 2
     //    TOTAL = 3
     public List<Article> findArticleByTypeOrderByCreatedAtDesc(CommunityType type);
+
+    public List<Article> findArticleByTypeAndChurchIdOrderByCreatedAtDesc(CommunityType type, Long id);
+
 }

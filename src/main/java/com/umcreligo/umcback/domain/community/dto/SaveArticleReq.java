@@ -13,7 +13,7 @@ public class SaveArticleReq {
 
     private String email;
 
-    private int type;
+    private String type;
 
     private Long churchId;
 
