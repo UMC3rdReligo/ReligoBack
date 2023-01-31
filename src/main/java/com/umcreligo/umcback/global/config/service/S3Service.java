@@ -23,6 +23,8 @@ import java.util.UUID;
 public class S3Service {
     private AmazonS3 s3Client;
 
+    public static final String CLOUD_FRONT_DOMAIN_NAME = "https://d2m054qjd5qsz5.cloudfront.net";
+
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
 
@@ -54,7 +56,7 @@ public class S3Service {
 
         s3Client.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);
 
-        return s3Client.getUrl(bucket, s3FileName).toString();
+        return CLOUD_FRONT_DOMAIN_NAME + "/" +s3FileName;
     }
     public void deleteFile(String fileName) {
         s3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
