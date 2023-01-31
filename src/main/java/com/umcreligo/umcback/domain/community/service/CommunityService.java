@@ -140,9 +140,9 @@ public class CommunityService {
     public void saveArticle(SaveArticleReq saveArticleReq){
         Article article = new Article();
         article.setTitle(saveArticleReq.getTitle());
-
+        System.out.println(saveArticleReq.getType());
         article.setType(stringToType(saveArticleReq.getType()));
-
+        System.out.println(article.getType());
         article.setUser(userRepository.findByEmail(saveArticleReq.getEmail()).get());
 
         article.setText(saveArticleReq.getText());
@@ -157,21 +157,21 @@ public class CommunityService {
     }
 
     public CommunityType stringToType(String type){
-        if(type == "church")
+        if(type.equals("church"))
             return CommunityType.CHURCH;
-        else if(type == "total")
+        else if(type.equals("total"))
             return CommunityType.TOTAL;
-        else if(type == "PA1")
+        else if(type.equals("PA1"))
             return CommunityType.PA1;
-        else if(type == "PA2")
+        else if(type.equals("PA2"))
             return CommunityType.PA2;
-        else if(type == "PA3")
+        else if(type.equals("PA3"))
             return CommunityType.PA3;
-        else if(type == "PB1")
+        else if(type.equals("PB1"))
             return CommunityType.PB1;
-        else if(type == "PB2")
+        else if(type.equals("PB2"))
             return CommunityType.PB2;
-        else if(type == "PB3")
+        else if(type.equals("PB3"))
             return CommunityType.PB3;
         else
             return CommunityType.PC1;
