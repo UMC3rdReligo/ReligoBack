@@ -89,7 +89,7 @@ public class UserService {
     }
 
     public UserInfoRes findInfoByUser() throws NoSuchElementException {
-        User user = userRepository.findWithJoinById(jwtService.getId()).orElseThrow();
+        User user = userRepository.findWithJoinByIdAndStatus(jwtService.getId(), User.UserStatus.ACTIVE).orElseThrow();
         UserInfoRes UserInfoRes = createUserInfo(user);
         return UserInfoRes;
     }

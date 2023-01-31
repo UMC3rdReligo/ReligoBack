@@ -15,7 +15,8 @@ public enum BaseResponseStatus {
     USER_NOT_FOUND(false, HttpStatus.BAD_REQUEST, 10001, "유저를 찾을 수 없습니다."),
     CHURCH_NOT_FOUND(false, HttpStatus.BAD_REQUEST, 10002, "교회를 찾을 수 없습니다."),
     ALREADY_HAS_CHURCH(false, HttpStatus.CONFLICT, 10003, "이미 가입된 교회가 있습니다."),
-    ALREADY_JOINED_CHURCH(false, HttpStatus.CONFLICT, 10004, "이미 가입한 교회입니다.");
+    ALREADY_JOINED_CHURCH(false, HttpStatus.CONFLICT, 10004, "이미 가입한 교회입니다."),
+    NICKNAME_DUPLICATE(false, HttpStatus.CONFLICT, 10005, "이미 존재하는 닉네임입니다.");
 
     private final boolean isSuccess;
     @JsonIgnore
