@@ -57,6 +57,10 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
     @Column
     private String email;
 
@@ -73,6 +77,11 @@ public class User {
 
     @Column
     private String refreshToken;
+
+    public enum UserStatus {
+        ACTIVE,
+        DELETED
+    }
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;

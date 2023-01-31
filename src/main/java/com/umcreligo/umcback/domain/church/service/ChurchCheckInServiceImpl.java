@@ -28,7 +28,7 @@ public class ChurchCheckInServiceImpl implements ChurchCheckInService {
 
     @Override
     public void signUpChurchMember(SignUpChurchMemberParam param) {
-        User user = this.userRepository.findWithJoinById(param.getUserId()).orElse(null);
+        User user = this.userRepository.findWithJoinByIdAndStatus(param.getUserId(), User.UserStatus.ACTIVE).orElse(null);
         Church church = this.churchRepository.findWithJoinByIdAndStatus(param.getChurchId(), Church.ChurchStatus.ACTIVE).orElse(null);
         this.checkUserExists(user);
         this.checkChurchExists(church);
@@ -60,7 +60,7 @@ public class ChurchCheckInServiceImpl implements ChurchCheckInService {
 
     @Override
     public void signUpChurchTrial(SignUpChurchTrialParam param) {
-        User user = this.userRepository.findWithJoinById(param.getUserId()).orElse(null);
+        User user = this.userRepository.findWithJoinByIdAndStatus(param.getUserId(), User.UserStatus.ACTIVE).orElse(null);
         Church church = this.churchRepository.findWithJoinByIdAndStatus(param.getChurchId(), Church.ChurchStatus.ACTIVE).orElse(null);
         this.checkUserExists(user);
         this.checkChurchExists(church);

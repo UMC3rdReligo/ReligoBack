@@ -66,6 +66,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             User user = new User();
             user.setEmail(email);
             user.setPassword(encodedPassword);
+            user.setStatus(User.UserStatus.ACTIVE);
             userRepository.save(user);
             transaction.commit();
 
