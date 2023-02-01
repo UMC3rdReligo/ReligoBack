@@ -64,10 +64,6 @@ public class UserService {
         userServeyRepository.save(userServey8);
         UserServey userServey9 = new UserServey("Q9",signUpReq.getQuestion_9(),user);
         userServeyRepository.save(userServey9);
-        UserServey userServey10 = new UserServey("Q10",signUpReq.getQuestion_10(),user);
-        userServeyRepository.save(userServey10);
-        UserServey userServey11 = new UserServey("Q11",signUpReq.getQuestion_11(),user);
-        userServeyRepository.save(userServey11);
         signUpReq.getHashTag().stream().forEach(hashtag -> SaveUserHashTag(hashtag,user) );
         Location location = locationRepository.findByCode(signUpReq.getLocationCode()).orElseThrow();
         user.setLocation(location);
