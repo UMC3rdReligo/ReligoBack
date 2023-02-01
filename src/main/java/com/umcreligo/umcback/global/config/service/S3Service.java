@@ -11,6 +11,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,6 +54,7 @@ public class S3Service {
         //파일 사이즈를 s3에 알려줌
         ObjectMetadata objMeta = new ObjectMetadata();
         objMeta.setContentLength(multipartFile.getInputStream().available());
+        objMeta.setContentType(multipartFile.getContentType());
 
         s3Client.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);
 
