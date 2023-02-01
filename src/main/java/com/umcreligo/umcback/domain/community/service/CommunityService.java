@@ -167,13 +167,15 @@ public class CommunityService {
         commentRepository.save(comment);
     }
 
+    //TODO 좋아요 개수 수정 필요
     public void clickHeart(HeartClickReq heartClickReq){
         Article article = articleRepository.findById(heartClickReq.getArticleId()).get();
         User user = userRepository.findByEmail(heartClickReq.getEmail()).get();
-
-        if(userArticleHeartRepository.existsByArticleAndUser(user,article)){
+        System.out.println(article.getTitle());
+        System.out.println(user.getEmail());
+        if(userArticleHeartRepository.existsByArticleAndUser(article,user)){
             //이미 눌렀으면 취소
-            userArticleHeartRepository.deleteUserArticleHeartByArticleAndUser(user,article);
+            userArticleHeartRepository.deleteUserArticleHeartByArticleAndUser(article,user);
         }else{
             //눌려있지 않다면 누름.
             userArticleHeartRepository.save(UserArticleHeart.builder()

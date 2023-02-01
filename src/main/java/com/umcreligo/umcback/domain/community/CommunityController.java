@@ -2,6 +2,7 @@ package com.umcreligo.umcback.domain.community;
 
 import com.umcreligo.umcback.domain.church.repository.PlatformRepository;
 import com.umcreligo.umcback.domain.community.dto.FindArticleRes;
+import com.umcreligo.umcback.domain.community.dto.HeartClickReq;
 import com.umcreligo.umcback.domain.community.dto.SaveArticleReq;
 import com.umcreligo.umcback.domain.community.dto.SaveCommentReq;
 import com.umcreligo.umcback.domain.community.service.CommunityService;
@@ -69,6 +70,15 @@ public class CommunityController {
         }
     }
 
+    @PostMapping("/community/heart/click")
+    public ResponseEntity<BaseResponse<BaseResponseStatus>> clickHeart(@RequestBody HeartClickReq heartClickReq){
+        try {
+            communityService.clickHeart(heartClickReq);
+            return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
+    }
 
     @GetMapping("/church")
     public ResponseEntity<BaseResponse> test(){
