@@ -4,12 +4,15 @@ import com.umcreligo.umcback.domain.church.repository.ChurchRepository;
 import com.umcreligo.umcback.domain.community.domain.Article;
 import com.umcreligo.umcback.domain.community.domain.Comment;
 import com.umcreligo.umcback.domain.community.domain.CommunityType;
+import com.umcreligo.umcback.domain.community.domain.UserArticleHeart;
 import com.umcreligo.umcback.domain.community.dto.FindArticleRes;
+import com.umcreligo.umcback.domain.community.dto.HeartClickReq;
 import com.umcreligo.umcback.domain.community.dto.SaveArticleReq;
 import com.umcreligo.umcback.domain.community.dto.SaveCommentReq;
 import com.umcreligo.umcback.domain.community.repository.ArticleRepository;
 import com.umcreligo.umcback.domain.community.repository.CommentRepository;
 import com.umcreligo.umcback.domain.community.repository.UserArticleHeartRepository;
+import com.umcreligo.umcback.domain.user.domain.User;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -164,6 +167,23 @@ public class CommunityService {
         commentRepository.save(comment);
     }
 
+    public void clickHeart(HeartClickReq heartClickReq){
+        Article article = articleRepository.findById(heartClickReq.getArticleId()).get();
+        User user = userRepository.findByEmail(heartClickReq.getEmail()).get();
+
+        if(userArticleHeartRepository.existsByArticleAndUser(user,article)){
+            //이미 눌렀으면 취소
+            userArticleHeartRepository.deleteUserArticleHeartByArticleAndUser(user,article);
+        }else{
+            //눌려있지 않다면 누름.
+            userArticleHeartRepository.save(UserArticleHeart.builder()
+                .article(article)
+                .user(user)
+                .build());
+        }
+    }
+
+
     public CommunityType stringToType(String type){
         if(type.equals("church"))
             return CommunityType.CHURCH;
@@ -205,7 +225,6 @@ public class CommunityService {
         else
             return "PC1";
     }
-
 
     //DTO JSON 확인용
     public SaveArticleReq test(){
