@@ -25,6 +25,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: jungminleeee/religo-back:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: Build and Push a Logstash Docker Image
         uses: docker/build-push-action@v3
         with:
@@ -32,6 +34,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: jungminleeee/religo-back-logstash:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: Make Production Env
         uses: SpicyPizza/create-envfile@v1.3
         with:
