@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 @ToString
 public class UserServey {
     public static final String QUESTION_CODE_PREFIX = "Q";
-    public static final long WANTED_PLATFORM_QUESTION_NUMBER = 4;
-    public static final long PERSONALITY_QUESTION_NUMBER_MIN = 6;
-    public static final long PERSONALITY_QUESTION_NUMBER_MAX = 11;
+    public static final long WANTED_PLATFORM_QUESTION_NUMBER = 3;
+    public static final long PERSONALITY_QUESTION_NUMBER_MIN = 4;
+    public static final long PERSONALITY_QUESTION_NUMBER_MAX = 9;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
