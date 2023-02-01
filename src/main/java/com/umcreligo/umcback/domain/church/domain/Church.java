@@ -1,5 +1,6 @@
 package com.umcreligo.umcback.domain.church.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.umcreligo.umcback.domain.location.domain.Location;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @ToString
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Church {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
