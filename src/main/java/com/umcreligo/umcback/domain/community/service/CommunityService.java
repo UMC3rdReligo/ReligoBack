@@ -6,6 +6,7 @@ import com.umcreligo.umcback.domain.community.domain.Comment;
 import com.umcreligo.umcback.domain.community.domain.CommunityType;
 import com.umcreligo.umcback.domain.community.dto.FindArticleRes;
 import com.umcreligo.umcback.domain.community.dto.SaveArticleReq;
+import com.umcreligo.umcback.domain.community.dto.SaveCommentReq;
 import com.umcreligo.umcback.domain.community.repository.ArticleRepository;
 import com.umcreligo.umcback.domain.community.repository.CommentRepository;
 import com.umcreligo.umcback.domain.community.repository.UserArticleHeartRepository;
@@ -154,6 +155,10 @@ public class CommunityService {
         else article.setChurch(churchRepository.findById(saveArticleReq.getChurchId()).get());
 
         articleRepository.save(article);
+    }
+
+    public void saveComment(SaveCommentReq saveCommentReq){
+
     }
 
     public CommunityType stringToType(String type){
