@@ -2,28 +2,30 @@ package com.umcreligo.umcback.domain.user;
 
 import com.umcreligo.umcback.domain.user.dto.LoginTokenRes;
 import com.umcreligo.umcback.domain.user.dto.SignUpReq;
-import com.umcreligo.umcback.domain.user.dto.UserChurchRes;
+import com.umcreligo.umcback.domain.user.dto.UserInfoRes;
 import com.umcreligo.umcback.domain.user.service.UserService;
+import com.umcreligo.umcback.global.config.BaseException;
 import com.umcreligo.umcback.global.config.BaseResponse;
 import com.umcreligo.umcback.global.config.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.NoSuchElementException;
 
+import static com.umcreligo.umcback.global.config.BaseResponseStatus.*;
+import static com.umcreligo.umcback.global.config.security.ValidationRegex.isRegexNickName;
+
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/user/signup")
+    @PostMapping("/signup")
     public ResponseEntity<BaseResponse> signup(
             @RequestBody final SignUpReq signUpReq) {
         try {
@@ -34,20 +36,39 @@ public class UserController {
         }
     }
 
-    @PostMapping("/user/logout")
-    public BaseResponse logout() {
+    @PostMapping("/logout")
+    public ResponseEntity<BaseResponse> logout() {
         userService.logout();
-        return new BaseResponse(BaseResponseStatus.SUCCESS);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
     }
 
-    @GetMapping("/user/church")
-    public ResponseEntity<BaseResponse<UserChurchRes>> ChurchbyUser(){
+    @GetMapping("/info")
+    public ResponseEntity<BaseResponse<UserInfoRes>> ChurchbyUser(){
         try {
-            return ResponseEntity.ok(new BaseResponse<>(this.userService.findChurchbyUser()));
+            return ResponseEntity.ok(new BaseResponse<>(this.userService.findInfoByUser()));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
         }
     }
+
+    @GetMapping("/checkNickName")
+    public ResponseEntity<BaseResponse> checkNickname(@RequestParam(value = "nickName", required = false) String nickName){
+        if(nickName==null || nickName.equals("")){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseResponse<>(EMPTY_USER_NICKNAME));
+        }
+        if(!isRegexNickName(nickName)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseResponse<>(INVALID_NICKNAME));
+        }
+        //service 호출
+        try{
+            userService.checkNickName(nickName);
+            return ResponseEntity.ok(new BaseResponse<>(SUCCESS));
+        } catch(BaseException exception){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new BaseResponse<>(NICKNAME_DUPLICATE));
+        }
+    }
+
+
 
     //이건 보류
 //    @PostMapping("user/refresh")

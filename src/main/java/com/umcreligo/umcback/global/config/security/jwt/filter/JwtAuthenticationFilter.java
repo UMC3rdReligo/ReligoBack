@@ -62,12 +62,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             //디비 저장하기 위한 transaction 만들기
             EntityTransaction transaction = em.getTransaction();
             transaction.begin();
-
-            System.out.println(email + " " +password);
             String encodedPassword = passwordEncoder.encode(password);
             User user = new User();
             user.setEmail(email);
             user.setPassword(encodedPassword);
+            user.setStatus(User.UserStatus.ACTIVE);
             userRepository.save(user);
             transaction.commit();
 
@@ -77,7 +76,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 authenticationManager.authenticate(authenticationToken);
 
         PrincipalUserDetails principalDetailis = (PrincipalUserDetails) authentication.getPrincipal();
-        System.out.println("Authentication : "+principalDetailis.getUser().getEmail());
         return authentication;
     }
 }

@@ -2,6 +2,7 @@ package com.umcreligo.umcback.domain.church.domain;
 
 import com.umcreligo.umcback.domain.user.domain.User;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -42,5 +43,6 @@ public class ChurchTrial {
     private LocalDateTime scheduledDateTime;
 
     @Column
+    @CreationTimestamp
     private LocalDateTime createdAt;
 }

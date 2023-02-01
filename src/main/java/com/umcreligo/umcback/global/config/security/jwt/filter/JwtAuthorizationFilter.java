@@ -36,7 +36,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter { //Jwt올바�
     protected boolean shouldNotFilter(HttpServletRequest request) { //이 필터 안걸치는 path
         String path = request.getServletPath();
         request.getMethod();
-        System.out.println(path);
         AntPathMatcher pathMatcher = new AntPathMatcher();
         return (
                 // TODO 인증이 필요없는 로직 추가
@@ -50,7 +49,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter { //Jwt올바�
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException {
-        System.out.println("ㅇ이ㄴ증");
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         JwtErrorCode errorCode = null;
 
