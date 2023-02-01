@@ -1,9 +1,10 @@
 package com.umcreligo.umcback.domain.community;
 
 import com.umcreligo.umcback.domain.church.repository.PlatformRepository;
-import com.umcreligo.umcback.domain.community.domain.CommunityType;
 import com.umcreligo.umcback.domain.community.dto.FindArticleRes;
+import com.umcreligo.umcback.domain.community.dto.HeartClickReq;
 import com.umcreligo.umcback.domain.community.dto.SaveArticleReq;
+import com.umcreligo.umcback.domain.community.dto.SaveCommentReq;
 import com.umcreligo.umcback.domain.community.service.CommunityService;
 import com.umcreligo.umcback.global.config.BaseResponse;
 import com.umcreligo.umcback.global.config.BaseResponseStatus;
@@ -54,6 +55,25 @@ public class CommunityController {
     public ResponseEntity<BaseResponse<BaseResponseStatus>> saveArticle(@RequestBody SaveArticleReq saveArticleReq){
         try {
             communityService.saveArticle(saveArticleReq);
+            return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
+    }
+    @PostMapping("/community/comment/new")
+    public ResponseEntity<BaseResponse<BaseResponseStatus>> saveComment(@RequestBody SaveCommentReq saveCommentReq){
+        try {
+            communityService.saveComment(saveCommentReq);
+            return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
+    }
+
+    @PostMapping("/community/heart/click")
+    public ResponseEntity<BaseResponse<BaseResponseStatus>> clickHeart(@RequestBody HeartClickReq heartClickReq){
+        try {
+            communityService.clickHeart(heartClickReq);
             return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
