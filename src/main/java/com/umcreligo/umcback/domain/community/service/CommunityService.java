@@ -141,9 +141,7 @@ public class CommunityService {
     public void saveArticle(SaveArticleReq saveArticleReq){
         Article article = new Article();
         article.setTitle(saveArticleReq.getTitle());
-        System.out.println(saveArticleReq.getType());
         article.setType(stringToType(saveArticleReq.getType()));
-        System.out.println(article.getType());
         article.setUser(userRepository.findByEmail(saveArticleReq.getEmail()).get());
 
         article.setText(saveArticleReq.getText());
@@ -158,7 +156,12 @@ public class CommunityService {
     }
 
     public void saveComment(SaveCommentReq saveCommentReq){
+        Comment comment = new Comment();
+        comment.setUser(userRepository.findByEmail(saveCommentReq.getEmail()).get());
+        comment.setText(saveCommentReq.getText());
+        comment.setArticle(articleRepository.findById(saveCommentReq.getArticleId()).get());
 
+        commentRepository.save(comment);
     }
 
     public CommunityType stringToType(String type){
