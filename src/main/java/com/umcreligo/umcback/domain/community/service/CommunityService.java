@@ -173,15 +173,20 @@ public class CommunityService {
         User user = userRepository.findByEmail(heartClickReq.getEmail()).get();
         System.out.println(article.getTitle());
         System.out.println(user.getEmail());
+        System.out.println(userArticleHeartRepository.existsByArticleAndUser(article,user));
         if(userArticleHeartRepository.existsByArticleAndUser(article,user)){
             //이미 눌렀으면 취소
             userArticleHeartRepository.deleteUserArticleHeartByArticleAndUser(article,user);
+            article.setHeartCount(article.getHeartCount()-1);
+            articleRepository.save(article);
         }else{
             //눌려있지 않다면 누름.
             userArticleHeartRepository.save(UserArticleHeart.builder()
                 .article(article)
                 .user(user)
                 .build());
+            article.setHeartCount(article.getHeartCount()+1);
+            articleRepository.save(article);
         }
     }
 
