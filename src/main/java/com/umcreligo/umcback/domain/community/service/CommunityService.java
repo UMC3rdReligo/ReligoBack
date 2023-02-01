@@ -4,11 +4,15 @@ import com.umcreligo.umcback.domain.church.repository.ChurchRepository;
 import com.umcreligo.umcback.domain.community.domain.Article;
 import com.umcreligo.umcback.domain.community.domain.Comment;
 import com.umcreligo.umcback.domain.community.domain.CommunityType;
+import com.umcreligo.umcback.domain.community.domain.UserArticleHeart;
 import com.umcreligo.umcback.domain.community.dto.FindArticleRes;
+import com.umcreligo.umcback.domain.community.dto.HeartClickReq;
 import com.umcreligo.umcback.domain.community.dto.SaveArticleReq;
+import com.umcreligo.umcback.domain.community.dto.SaveCommentReq;
 import com.umcreligo.umcback.domain.community.repository.ArticleRepository;
 import com.umcreligo.umcback.domain.community.repository.CommentRepository;
 import com.umcreligo.umcback.domain.community.repository.UserArticleHeartRepository;
+import com.umcreligo.umcback.domain.user.domain.User;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -140,9 +144,7 @@ public class CommunityService {
     public void saveArticle(SaveArticleReq saveArticleReq){
         Article article = new Article();
         article.setTitle(saveArticleReq.getTitle());
-        System.out.println(saveArticleReq.getType());
         article.setType(stringToType(saveArticleReq.getType()));
-        System.out.println(article.getType());
         article.setUser(userRepository.findByEmail(saveArticleReq.getEmail()).get());
 
         article.setText(saveArticleReq.getText());
@@ -155,6 +157,34 @@ public class CommunityService {
 
         articleRepository.save(article);
     }
+
+    public void saveComment(SaveCommentReq saveCommentReq){
+        Comment comment = new Comment();
+        comment.setUser(userRepository.findByEmail(saveCommentReq.getEmail()).get());
+        comment.setText(saveCommentReq.getText());
+        comment.setArticle(articleRepository.findById(saveCommentReq.getArticleId()).get());
+
+        commentRepository.save(comment);
+    }
+
+    //TODO 좋아요 개수 수정 필요
+    public void clickHeart(HeartClickReq heartClickReq){
+        Article article = articleRepository.findById(heartClickReq.getArticleId()).get();
+        User user = userRepository.findByEmail(heartClickReq.getEmail()).get();
+        System.out.println(article.getTitle());
+        System.out.println(user.getEmail());
+        if(userArticleHeartRepository.existsByArticleAndUser(article,user)){
+            //이미 눌렀으면 취소
+            userArticleHeartRepository.deleteUserArticleHeartByArticleAndUser(article,user);
+        }else{
+            //눌려있지 않다면 누름.
+            userArticleHeartRepository.save(UserArticleHeart.builder()
+                .article(article)
+                .user(user)
+                .build());
+        }
+    }
+
 
     public CommunityType stringToType(String type){
         if(type.equals("church"))
@@ -197,7 +227,6 @@ public class CommunityService {
         else
             return "PC1";
     }
-
 
     //DTO JSON 확인용
     public SaveArticleReq test(){
