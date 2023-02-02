@@ -83,13 +83,13 @@ public class ChurchCheckInServiceImpl implements ChurchCheckInService {
 
     private void checkUserExists(User user) throws BaseException {
         if (user == null) {
-            throw new BaseException(BaseResponseStatus.USER_NOT_FOUND);
+            throw new BaseException(BaseResponseStatus.INVALID_USER_ID);
         }
     }
 
     private void checkChurchExists(Church church) throws BaseException {
         if (church == null) {
-            throw new BaseException(BaseResponseStatus.CHURCH_NOT_FOUND);
+            throw new BaseException(BaseResponseStatus.INVALID_CHURCH_ID);
         }
     }
 }

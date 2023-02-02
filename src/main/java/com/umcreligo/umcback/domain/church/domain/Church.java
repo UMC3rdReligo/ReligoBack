@@ -71,4 +71,47 @@ public class Church {
         ACTIVE,
         DELETED
     }
+
+    public void update(Platform platform, Location location, String name, String address, String homepageURL,
+                       String introduction, String minister, String schedule, String phoneNum) {
+        if (platform != null) {
+            this.platform = platform;
+        }
+
+        if (location != null) {
+            this.location = location;
+        }
+
+        if (name != null) {
+            this.name = name;
+        }
+
+        if (address != null) {
+            this.address = address;
+        }
+
+        if (homepageURL != null) {
+            this.homepageURL = homepageURL;
+        }
+
+        if (introduction != null) {
+            this.introduction = introduction;
+        }
+
+        if (minister != null) {
+            this.minister = minister;
+        }
+
+        if (schedule != null) {
+            this.schedule = schedule;
+        }
+
+        if (phoneNum != null) {
+            this.phoneNum = phoneNum;
+        }
+    }
+
+    public void delete() {
+        this.status = ChurchStatus.DELETED;
+    }
 }

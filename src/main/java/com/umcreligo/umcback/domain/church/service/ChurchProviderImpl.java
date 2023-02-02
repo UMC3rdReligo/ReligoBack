@@ -11,6 +11,8 @@ import com.umcreligo.umcback.domain.user.domain.UserServey;
 import com.umcreligo.umcback.domain.user.repository.UserHashTagRepository;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import com.umcreligo.umcback.domain.user.repository.UserServeyRepository;
+import com.umcreligo.umcback.global.config.BaseException;
+import com.umcreligo.umcback.global.config.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -46,7 +48,7 @@ public class ChurchProviderImpl implements ChurchProvider {
     public List<FindChurchResult> findChurches(List<Long> churchIds) {
         List<Church> churches = this.churchRepository.findAllWithJoinByIdInAndStatus(churchIds, Church.ChurchStatus.ACTIVE);
         List<Long> foundIds = churches.stream().map(Church::getId).collect(Collectors.toList());
-        List<ChurchHashTag> hashTags = this.churchHashTagRepository.findAllByChurchIdIn(foundIds);
+        List<ChurchHashTag> hashTags = this.churchHashTagRepository.findAllByChurchIdInOrderByIdAsc(foundIds);
         List<ChurchImage> mainImages = this.churchImageRepository.findAllByChurchIdInAndTypeAndStatus(foundIds,
             ChurchImage.ChurchImageType.MAIN, ChurchImage.ChurchImageStatus.ACTIVE);
         List<ChurchImage> detailImages = this.churchImageRepository.findAllByChurchIdInAndTypeAndStatus(foundIds,
@@ -71,7 +73,7 @@ public class ChurchProviderImpl implements ChurchProvider {
     public Optional<FindChurchResult> findChurch(Long churchId) {
         try {
             Church church = this.churchRepository.findWithJoinByIdAndStatus(churchId, Church.ChurchStatus.ACTIVE).orElseThrow();
-            List<ChurchHashTag> hashTags = this.churchHashTagRepository.findAllByChurchId(church.getId());
+            List<ChurchHashTag> hashTags = this.churchHashTagRepository.findAllByChurchIdOrderByIdAsc(church.getId());
             List<ChurchImage> mainImages = this.churchImageRepository.findAllByChurchIdAndTypeAndStatus(church.getId(),
                 ChurchImage.ChurchImageType.MAIN, ChurchImage.ChurchImageStatus.ACTIVE);
             List<ChurchImage> detailImages = this.churchImageRepository.findAllByChurchIdAndTypeAndStatus(church.getId(),
@@ -85,7 +87,9 @@ public class ChurchProviderImpl implements ChurchProvider {
 
     @Override
     public List<FindChurchResult> recommendChurches(Long userId) {
-        User user = this.userRepository.findById(userId).orElseThrow();
+        User user = this.userRepository.findById(userId).orElse(null);
+        this.checkUserExists(user);
+
         List<String> userHashtagCodes = this.userHashTagRepository.findAllByUserIdOrderByIdDesc(user.getId()).stream()
             .map(userHashTag -> userHashTag.getHashTag().getCode())
             .collect(Collectors.toList());
@@ -128,7 +132,9 @@ public class ChurchProviderImpl implements ChurchProvider {
 
     @Override
     public List<FindChurchResult> searchChurches(Long userId, String platformCode, String hashtagCode, String keyword) {
-        User user = this.userRepository.findById(userId).orElseThrow();
+        User user = this.userRepository.findById(userId).orElse(null);
+        this.checkUserExists(user);
+
         String userLocationCode = StringUtils.defaultString(Objects.nonNull(user.getLocation()) ? user.getLocation().getCode() : null);
         String userCountryCode = Location.builder().code(userLocationCode).build().getCountryCode();
         String userCityCode = Location.builder().code(userLocationCode).build().getCityCode();
@@ -243,5 +249,11 @@ public class ChurchProviderImpl implements ChurchProvider {
         result.setMainImage(mainImages.isEmpty() ? "" : mainImages.get(0).getUrl());
         result.setDetailImages(detailImages.stream().map(ChurchImage::getUrl).collect(Collectors.toList()));
         return result;
+    }
+
+    private void checkUserExists(User user) throws BaseException {
+        if (user == null) {
+            throw new BaseException(BaseResponseStatus.INVALID_USER_ID);
+        }
     }
 }
