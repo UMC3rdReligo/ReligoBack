@@ -22,7 +22,8 @@ public enum BaseResponseStatus {
     INVALID_NICKNAME(false, HttpStatus.BAD_REQUEST, 10007, "닉네임의 형식을 확인해주세요"),
     INVALID_PLATFORM_CODE(false, HttpStatus.BAD_REQUEST, 10008, "잘못된 교단 코드입니다."),
     INVALID_LOCATION_CODE(false, HttpStatus.BAD_REQUEST, 10009, "잘못된 지역 코드입니다."),
-    INVALID_HASH_TAG(false, HttpStatus.BAD_REQUEST, 10010, "잘못된 해시태그입니다.");
+    INVALID_HASH_TAG(false, HttpStatus.BAD_REQUEST, 10010, "잘못된 해시태그입니다."),
+    ALREADY_REVIEWED_CHURCH(false, HttpStatus.CONFLICT, 10011, "이미 리뷰를 작성한 교회입니다.");
 
     private final boolean isSuccess;
     @JsonIgnore

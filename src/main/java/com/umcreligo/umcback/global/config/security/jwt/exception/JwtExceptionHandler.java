@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -60,11 +61,19 @@ public class JwtExceptionHandler {
         List<String> errors = e.getBindingResult()
             .getFieldErrors()
             .stream()
-            .map(error -> (error.getField() + " " +
-                Objects.requireNonNullElse(error.getDefaultMessage(), "")).trim() + ".")
+            .map(error -> (error.getField() + ": " +
+                Objects.requireNonNullElse(error.getDefaultMessage(), "")).trim())
             .collect(Collectors.toList());
 
-        JwtException customException = new JwtException(INVALID_VALUE, StringUtils.join(errors, " "));
+        JwtException customException = new JwtException(INVALID_VALUE, StringUtils.join(errors, ", "));
+        return ResponseEntity
+            .status(INVALID_VALUE.getHttpStatus())
+            .body(new ErrorResponse(customException));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
+        JwtException customException = new JwtException(INVALID_VALUE, e.getMessage());
         return ResponseEntity
             .status(INVALID_VALUE.getHttpStatus())
             .body(new ErrorResponse(customException));
