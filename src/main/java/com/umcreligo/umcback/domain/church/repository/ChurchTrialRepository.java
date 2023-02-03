@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface ChurchTrialRepository extends JpaRepository<ChurchTrial, Long> {
     @EntityGraph(attributePaths = {"user", "church"}, type = EntityGraph.EntityGraphType.LOAD)
-    List<ChurchTrial> findWithJoinByUserIdOrderByIdDesc(Long userId, Pageable pageable);
+    List<ChurchTrial> findWithJoinByUserIdAndStatusOrderByIdDesc(Long userId, ChurchTrial.ChurchTrialStatus churchTrialStatus, Pageable pageable);
 }

@@ -153,6 +153,13 @@ public class ChurchController {
         return ResponseEntity.ok(new BaseResponse<>(true));
     }
 
+    @DeleteMapping("/trials/{trialId}")
+    public ResponseEntity<BaseResponse<Boolean>> withdrawChurchTrial(@PathVariable("trialId") Long trialId) {
+        Long userId = this.jwtService.getId();
+        this.churchCheckInService.withdrawChurchTrial(userId, trialId);
+        return ResponseEntity.ok(new BaseResponse<>(true));
+    }
+
     @GetMapping("/recommend")
     public ResponseEntity<BaseResponse<List<FindChurchResult>>> findRecommendChurches() {
         Long userId = this.jwtService.getId();

@@ -7,4 +7,6 @@ public interface ChurchCheckInService {
     void signUpChurchMember(SignUpChurchMemberParam param);
 
     void signUpChurchTrial(SignUpChurchTrialParam param);
+
+    void withdrawChurchTrial(Long userId, Long trialId);
 }

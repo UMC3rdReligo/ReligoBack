@@ -17,6 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -76,9 +78,25 @@ public class ChurchCheckInServiceImpl implements ChurchCheckInService {
             .phoneNum(param.getPhoneNum())
             .message(param.getMessage())
             .scheduledDateTime(param.getScheduledDateTime())
+            .status(ChurchTrial.ChurchTrialStatus.ACTIVE)
             .build();
 
         this.churchTrialRepository.save(churchTrial);
+    }
+
+    @Override
+    public void withdrawChurchTrial(Long userId, Long trialId) {
+        ChurchTrial churchTrial = this.churchTrialRepository.findById(trialId).orElse(null);
+
+        if (churchTrial == null) {
+            return;
+        }
+
+        if (!Objects.equals(churchTrial.getUser().getId(), userId)) {
+            throw new BaseException(BaseResponseStatus.FORBIDDEN);
+        }
+
+        churchTrial.delete();
     }
 
     private void checkUserExists(User user) throws BaseException {

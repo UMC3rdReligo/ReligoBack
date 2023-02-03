@@ -47,7 +47,8 @@ public class ChurchCheckInProviderImpl implements ChurchCheckInProvider {
 
     @Override
     public List<FindTrialResult> findTrials(Long userId, int pageSize) {
-        List<ChurchTrial> churchTrials = this.churchTrialRepository.findWithJoinByUserIdOrderByIdDesc(userId, Pageable.ofSize(pageSize));
+        List<ChurchTrial> churchTrials = this.churchTrialRepository.findWithJoinByUserIdAndStatusOrderByIdDesc(
+            userId, ChurchTrial.ChurchTrialStatus.ACTIVE, Pageable.ofSize(pageSize));
 
         return churchTrials.stream().map(churchTrial -> {
             FindTrialResult result = new FindTrialResult();
