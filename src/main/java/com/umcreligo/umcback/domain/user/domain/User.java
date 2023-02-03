@@ -94,4 +94,8 @@ public class User {
     public void encodePassword(String encodedPassword) {
         this.password = encodedPassword;
     }
+
+    public void withdrawChurch() {
+        this.church = null;
+    }
 }

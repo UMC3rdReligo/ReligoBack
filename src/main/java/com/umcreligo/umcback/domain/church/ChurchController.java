@@ -1,6 +1,7 @@
 package com.umcreligo.umcback.domain.church;
 
 import com.umcreligo.umcback.domain.church.dto.*;
+import com.umcreligo.umcback.domain.church.service.ChurchCheckInProvider;
 import com.umcreligo.umcback.domain.church.service.ChurchCheckInService;
 import com.umcreligo.umcback.domain.church.service.ChurchProvider;
 import com.umcreligo.umcback.domain.church.service.ChurchService;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class ChurchController {
     private final ChurchProvider churchProvider;
     private final ChurchService churchService;
+    private final ChurchCheckInProvider churchCheckInProvider;
     private final ChurchCheckInService churchCheckInService;
     private final JwtService jwtService;
 
@@ -97,6 +99,17 @@ public class ChurchController {
         return ResponseEntity.ok(new BaseResponse<>(true));
     }
 
+    @GetMapping("/registrations/me/latest")
+    public ResponseEntity<BaseResponse<FindRegistrationResult>> findMyChurchRegistration() {
+        Long userId = this.jwtService.getId();
+
+        try {
+            return ResponseEntity.ok(new BaseResponse<>(this.churchCheckInProvider.findRegistration(userId).orElseThrow()));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
+    }
+
     @PostMapping("/{churchId}/registrations")
     public ResponseEntity<BaseResponse<Boolean>> signUpChurchMember(@PathVariable("churchId") Long churchId,
                                                                     @Valid @RequestBody SignUpChurchMemberRequest request) {
@@ -117,6 +130,12 @@ public class ChurchController {
         return ResponseEntity.ok(new BaseResponse<>(true));
     }
 
+    @GetMapping("/trials/me")
+    public ResponseEntity<BaseResponse<List<FindTrialResult>>> findMyChurchTrials() {
+        Long userId = this.jwtService.getId();
+        return ResponseEntity.ok(new BaseResponse<>(this.churchCheckInProvider.findTrials(userId, 100)));
+    }
+
     @PostMapping("/{churchId}/trials")
     public ResponseEntity<BaseResponse<Boolean>> signUpChurchTrial(@PathVariable("churchId") Long churchId,
                                                                    @Valid @RequestBody SignUpChurchTrialRequest request) {
@@ -131,6 +150,20 @@ public class ChurchController {
         param.setScheduledDateTime(request.getScheduledDate() != null ? request.getScheduledDate().atStartOfDay() : null);
 
         this.churchCheckInService.signUpChurchTrial(param);
+        return ResponseEntity.ok(new BaseResponse<>(true));
+    }
+
+    @DeleteMapping("/trials/me/{trialId}")
+    public ResponseEntity<BaseResponse<Boolean>> withdrawChurchTrial(@PathVariable("trialId") Long trialId) {
+        Long userId = this.jwtService.getId();
+        this.churchCheckInService.withdrawChurchTrial(userId, trialId);
+        return ResponseEntity.ok(new BaseResponse<>(true));
+    }
+
+    @DeleteMapping("/members/me")
+    public ResponseEntity<BaseResponse<Boolean>> withdrawChurchMember() {
+        Long userId = this.jwtService.getId();
+        this.churchCheckInService.withdrawChurchMember(userId);
         return ResponseEntity.ok(new BaseResponse<>(true));
     }
 
