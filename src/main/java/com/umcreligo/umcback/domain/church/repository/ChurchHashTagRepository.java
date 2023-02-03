@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ChurchHashTagRepository extends JpaRepository<ChurchHashTag, Long> {
-    List<ChurchHashTag> findAllByChurchId(Long churchId);
+    List<ChurchHashTag> findAllByChurchIdOrderByIdAsc(Long churchId);
 
-    List<ChurchHashTag> findAllByChurchIdIn(List<Long> churchId);
+    List<ChurchHashTag> findAllByChurchIdInOrderByIdAsc(List<Long> churchIds);
 }
