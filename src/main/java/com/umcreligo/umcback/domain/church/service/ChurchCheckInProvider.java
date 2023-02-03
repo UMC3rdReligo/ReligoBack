@@ -1,14 +1,13 @@
 package com.umcreligo.umcback.domain.church.service;
 
-import com.umcreligo.umcback.domain.church.domain.ChurchRegistration;
-import com.umcreligo.umcback.domain.church.domain.ChurchTrial;
+import com.umcreligo.umcback.domain.church.dto.FindRegistrationResult;
+import com.umcreligo.umcback.domain.church.dto.FindTrialResult;
 
 import java.util.List;
 import java.util.Optional;
 
-// TODO: 파라미터 정의, API 구체화
 public interface ChurchCheckInProvider {
-    Optional<ChurchRegistration> findRegistration();
+    Optional<FindRegistrationResult> findRegistration(Long userId);
 
-    List<ChurchTrial> findTrials();
+    List<FindTrialResult> findTrials(Long userId, int pageSize);
 }
