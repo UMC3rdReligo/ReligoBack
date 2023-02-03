@@ -3,6 +3,7 @@ package com.umcreligo.umcback.domain.church.domain;
 import com.umcreligo.umcback.domain.user.domain.User;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -42,7 +43,24 @@ public class ChurchTrial {
     @Column
     private LocalDateTime scheduledDateTime;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ChurchTrialStatus status;
+
     @Column
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    public enum ChurchTrialStatus {
+        ACTIVE,
+        DELETED
+    }
+
+    public void delete() {
+        this.status = ChurchTrialStatus.DELETED;
+    }
 }

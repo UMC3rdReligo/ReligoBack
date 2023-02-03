@@ -12,5 +12,5 @@ public interface ChurchRepository extends JpaRepository<Church, Long> {
     Optional<Church> findWithJoinByIdAndStatus(Long churchId, Church.ChurchStatus churchStatus);
 
     @EntityGraph(attributePaths = {"platform", "location"}, type = EntityGraph.EntityGraphType.LOAD)
-    List<Church> findAllWithJoinByIdInAndStatus(List<Long> churchId, Church.ChurchStatus churchStatus);
+    List<Church> findAllWithJoinByIdInAndStatus(List<Long> churchIds, Church.ChurchStatus churchStatus);
 }

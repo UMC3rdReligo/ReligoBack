@@ -9,6 +9,6 @@ public interface ChurchImageRepository extends JpaRepository<ChurchImage, Long> 
     List<ChurchImage> findAllByChurchIdAndTypeAndStatus(Long churchId, ChurchImage.ChurchImageType churchImageType,
                                                         ChurchImage.ChurchImageStatus churchImageStatus);
 
-    List<ChurchImage> findAllByChurchIdInAndTypeAndStatus(List<Long> churchId, ChurchImage.ChurchImageType churchImageType,
+    List<ChurchImage> findAllByChurchIdInAndTypeAndStatus(List<Long> churchIds, ChurchImage.ChurchImageType churchImageType,
                                                           ChurchImage.ChurchImageStatus churchImageStatus);
 }

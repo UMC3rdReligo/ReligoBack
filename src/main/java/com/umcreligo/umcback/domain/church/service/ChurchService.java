@@ -1,5 +1,11 @@
 package com.umcreligo.umcback.domain.church.service;
 
-// TODO: 추후 부가 기능 추가 시 대응
+import com.umcreligo.umcback.domain.church.dto.CreateOrUpdateChurchParam;
+
 public interface ChurchService {
+    Long createChurch(CreateOrUpdateChurchParam param);
+
+    void updateChurch(CreateOrUpdateChurchParam param);
+
+    void deleteChurch(Long churchId);
 }

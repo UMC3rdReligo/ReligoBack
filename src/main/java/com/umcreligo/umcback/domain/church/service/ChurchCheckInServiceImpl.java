@@ -17,6 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -76,20 +78,47 @@ public class ChurchCheckInServiceImpl implements ChurchCheckInService {
             .phoneNum(param.getPhoneNum())
             .message(param.getMessage())
             .scheduledDateTime(param.getScheduledDateTime())
+            .status(ChurchTrial.ChurchTrialStatus.ACTIVE)
             .build();
 
         this.churchTrialRepository.save(churchTrial);
     }
 
+    @Override
+    public void withdrawChurchMember(Long userId) {
+        User user = this.userRepository.findWithJoinByIdAndStatus(userId, User.UserStatus.ACTIVE).orElse(null);
+
+        if (user == null) {
+            return;
+        }
+
+        user.withdrawChurch();
+    }
+
+    @Override
+    public void withdrawChurchTrial(Long userId, Long trialId) {
+        ChurchTrial churchTrial = this.churchTrialRepository.findById(trialId).orElse(null);
+
+        if (churchTrial == null) {
+            return;
+        }
+
+        if (!Objects.equals(churchTrial.getUser().getId(), userId)) {
+            return;
+        }
+
+        churchTrial.delete();
+    }
+
     private void checkUserExists(User user) throws BaseException {
         if (user == null) {
-            throw new BaseException(BaseResponseStatus.USER_NOT_FOUND);
+            throw new BaseException(BaseResponseStatus.INVALID_USER_ID);
         }
     }
 
     private void checkChurchExists(Church church) throws BaseException {
         if (church == null) {
-            throw new BaseException(BaseResponseStatus.CHURCH_NOT_FOUND);
+            throw new BaseException(BaseResponseStatus.INVALID_CHURCH_ID);
         }
     }
 }

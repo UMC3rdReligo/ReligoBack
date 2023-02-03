@@ -5,10 +5,7 @@ import com.umcreligo.umcback.domain.community.domain.Article;
 import com.umcreligo.umcback.domain.community.domain.Comment;
 import com.umcreligo.umcback.domain.community.domain.CommunityType;
 import com.umcreligo.umcback.domain.community.domain.UserArticleHeart;
-import com.umcreligo.umcback.domain.community.dto.FindArticleRes;
-import com.umcreligo.umcback.domain.community.dto.HeartClickReq;
-import com.umcreligo.umcback.domain.community.dto.SaveArticleReq;
-import com.umcreligo.umcback.domain.community.dto.SaveCommentReq;
+import com.umcreligo.umcback.domain.community.dto.*;
 import com.umcreligo.umcback.domain.community.repository.ArticleRepository;
 import com.umcreligo.umcback.domain.community.repository.CommentRepository;
 import com.umcreligo.umcback.domain.community.repository.UserArticleHeartRepository;
@@ -37,107 +34,17 @@ public class CommunityService {
 
     private int FINDARTICLE_COUNT = 20;
     //전체 커뮤니티 내용 Type = TOTAL
-    public List<FindArticleRes> findAllArticles(){
+    public List<FindArticleRes> findAllArticles(FindArticleReq findArticleReq){
         List<Article> allArticles = articleRepository.findArticleByTypeOrderByCreatedAtDesc(CommunityType.TOTAL);
-        List<FindArticleRes> resultList = new ArrayList<>();
-
-        if(allArticles.size() < 20){
-            FINDARTICLE_COUNT = allArticles.size();
-        }
-        for(int i = 0 ; i < FINDARTICLE_COUNT ; i++){
-            FindArticleRes findArticleRes = new FindArticleRes();
-
-            Article article = allArticles.get(i);
-            List<Comment> commentList = commentRepository.findCommentByArticleId(article.getId());
-
-            findArticleRes.setText(article.getText());
-            findArticleRes.setType(typeToString(article.getType()));
-            findArticleRes.setHeartCnt(article.getHeartCount());
-            findArticleRes.setArticleId(article.getId());
-            findArticleRes.setWriter(article.getUser().getNickname());
-            findArticleRes.setTitle(article.getTitle());
-
-
-            //이름, 작성시간, 내용
-            Map<String,Object> commentMap = new HashMap<>();
-            for(Comment comment:commentList){
-                commentMap.put("name",comment.getUser().getNickname());
-                commentMap.put("text",comment.getText());
-                commentMap.put("createdAt",comment.getCreatedAt());
-            }
-            findArticleRes.setComments(commentMap);
-
-            resultList.add(findArticleRes);
-        }
-            return resultList;
+        return findArticle(allArticles,findArticleReq);
     }
-    public List<FindArticleRes> findChurchArticles(Long churchid){
-        List<Article> allArticles = articleRepository.findArticleByTypeAndChurchIdOrderByCreatedAtDesc(CommunityType.CHURCH,churchid);
-        List<FindArticleRes> resultList = new ArrayList<>();
-
-        if(allArticles.size() < 20){
-            FINDARTICLE_COUNT = allArticles.size();
-        }
-
-        for(int i = 0 ; i < FINDARTICLE_COUNT ; i++){
-            FindArticleRes findArticleRes = new FindArticleRes();
-
-            Article article = allArticles.get(i);
-            List<Comment> commentList = commentRepository.findCommentByArticleId(article.getId());
-
-            findArticleRes.setText(article.getText());
-            findArticleRes.setType(typeToString(article.getType()));
-            findArticleRes.setHeartCnt(article.getHeartCount());
-            findArticleRes.setArticleId(article.getId());
-            findArticleRes.setWriter(article.getUser().getNickname());
-            findArticleRes.setTitle(article.getTitle());
-
-            //이름, 작성시간, 내용
-            Map<String,Object> commentMap = new HashMap<>();
-            for(Comment comment:commentList){
-                commentMap.put("name",comment.getUser().getNickname());
-                commentMap.put("text",comment.getText());
-                commentMap.put("createdAt",comment.getCreatedAt());
-            }
-            findArticleRes.setComments(commentMap);
-
-            resultList.add(findArticleRes);
-        }
-        return resultList;
+    public List<FindArticleRes> findChurchArticles(FindArticleReq findArticleReq){
+        List<Article> allArticles = articleRepository.findArticleByTypeAndChurchIdOrderByCreatedAtDesc(CommunityType.CHURCH,findArticleReq.getChurchId());
+        return findArticle(allArticles,findArticleReq);
     }
-    public List<FindArticleRes> findPlatformArticles(String plaformCode){
-        List<Article> allArticles = articleRepository.findArticleByTypeOrderByCreatedAtDesc(stringToType(plaformCode));
-        List<FindArticleRes> resultList = new ArrayList<>();
-
-        if(allArticles.size() < 20){
-            FINDARTICLE_COUNT = allArticles.size();
-        }
-        for(int i = 0 ; i < FINDARTICLE_COUNT ; i++){
-            FindArticleRes findArticleRes = new FindArticleRes();
-
-            Article article = allArticles.get(i);
-            List<Comment> commentList = commentRepository.findCommentByArticleId(article.getId());
-
-            findArticleRes.setText(article.getText());
-            findArticleRes.setType(typeToString(article.getType()));
-            findArticleRes.setHeartCnt(article.getHeartCount());
-            findArticleRes.setArticleId(article.getId());
-            findArticleRes.setWriter(article.getUser().getNickname());
-            findArticleRes.setTitle(article.getTitle());
-
-
-            //이름, 작성시간, 내용
-            Map<String,Object> commentMap = new HashMap<>();
-            for(Comment comment:commentList){
-                commentMap.put("name",comment.getUser().getNickname());
-                commentMap.put("text",comment.getText());
-                commentMap.put("createdAt",comment.getCreatedAt());
-            }
-            findArticleRes.setComments(commentMap);
-
-            resultList.add(findArticleRes);
-        }
-        return resultList;
+    public List<FindArticleRes> findPlatformArticles(FindArticleReq findArticleReq){
+        List<Article> allArticles = articleRepository.findArticleByTypeOrderByCreatedAtDesc(stringToType(findArticleReq.getPlatformCode()));
+        return findArticle(allArticles,findArticleReq);
     }
 
     //글쓰기
@@ -158,6 +65,7 @@ public class CommunityService {
         articleRepository.save(article);
     }
 
+    //댓글쓰기
     public void saveComment(SaveCommentReq saveCommentReq){
         Comment comment = new Comment();
         comment.setUser(userRepository.findByEmail(saveCommentReq.getEmail()).get());
@@ -167,7 +75,7 @@ public class CommunityService {
         commentRepository.save(comment);
     }
 
-    //TODO 좋아요 개수 수정 필요
+    //좋아요 버튼 클릭시
     public void clickHeart(HeartClickReq heartClickReq){
         Article article = articleRepository.findById(heartClickReq.getArticleId()).get();
         User user = userRepository.findByEmail(heartClickReq.getEmail()).get();
@@ -190,7 +98,44 @@ public class CommunityService {
         }
     }
 
+    /*------내부사용 함수--------*/
 
+    public List<FindArticleRes> findArticle(List<Article> allArticles, FindArticleReq findArticleReq){
+        List<FindArticleRes> resultList = new ArrayList<>();
+        User user = userRepository.findByEmail(findArticleReq.getEmail()).get();
+        if(allArticles.size() < 20){
+            FINDARTICLE_COUNT = allArticles.size();
+        }
+        for(int i = 0 ; i < FINDARTICLE_COUNT ; i++){
+            FindArticleRes findArticleRes = new FindArticleRes();
+
+            Article article = allArticles.get(i);
+            List<Comment> commentList = commentRepository.findCommentByArticleId(article.getId());
+
+            findArticleRes.setText(article.getText());
+            findArticleRes.setType(typeToString(article.getType()));
+            findArticleRes.setHeartCnt(article.getHeartCount());
+            findArticleRes.setArticleId(article.getId());
+            findArticleRes.setWriter(article.getUser().getNickname());
+            findArticleRes.setTitle(article.getTitle());
+
+
+            //이름, 작성시간, 내용
+            Map<String,Object> commentMap = new HashMap<>();
+            for(Comment comment:commentList){
+                commentMap.put("name",comment.getUser().getNickname());
+                commentMap.put("text",comment.getText());
+                commentMap.put("createdAt",comment.getCreatedAt());
+            }
+            findArticleRes.setComments(commentMap);
+
+            if(userArticleHeartRepository.existsByArticleAndUser(article,user))findArticleRes.setHearted(true);
+            else findArticleRes.setHearted(false);
+
+            resultList.add(findArticleRes);
+        }
+        return resultList;
+    }
     public CommunityType stringToType(String type){
         if(type.equals("church"))
             return CommunityType.CHURCH;

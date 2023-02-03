@@ -24,5 +24,5 @@ public class FindArticleRes {
 
     private Map<String,Object> comments;
 
-
+    private boolean isHearted;
 }
