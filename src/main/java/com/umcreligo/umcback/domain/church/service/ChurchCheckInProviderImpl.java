@@ -7,6 +7,7 @@ import com.umcreligo.umcback.domain.church.dto.FindTrialResult;
 import com.umcreligo.umcback.domain.church.repository.ChurchRegistrationRepository;
 import com.umcreligo.umcback.domain.church.repository.ChurchTrialRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +48,7 @@ public class ChurchCheckInProviderImpl implements ChurchCheckInProvider {
 
     @Override
     public List<FindTrialResult> findTrials(Long userId, int pageSize) {
-        List<ChurchTrial> churchTrials = this.churchTrialRepository.findWithJoinByUserIdAndStatusOrderByIdDesc(
+        Page<ChurchTrial> churchTrials = this.churchTrialRepository.findWithJoinByUserIdAndStatusOrderByIdDesc(
             userId, ChurchTrial.ChurchTrialStatus.ACTIVE, Pageable.ofSize(pageSize));
 
         return churchTrials.stream().map(churchTrial -> {

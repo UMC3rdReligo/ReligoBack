@@ -98,7 +98,7 @@ public class ChurchServiceImpl implements ChurchService {
 
     @Override
     public void updateChurch(CreateOrUpdateChurchParam param) {
-        Church church = this.churchRepository.findById(param.getId()).orElse(null);
+        Church church = this.churchRepository.findWithJoinByIdAndStatus(param.getId(), Church.ChurchStatus.ACTIVE).orElse(null);
 
         if (church == null) {
             throw new BaseException(BaseResponseStatus.NOT_FOUND);

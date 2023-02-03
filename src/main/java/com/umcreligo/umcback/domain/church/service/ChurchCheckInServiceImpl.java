@@ -103,7 +103,7 @@ public class ChurchCheckInServiceImpl implements ChurchCheckInService {
             return;
         }
 
-        if (!Objects.equals(churchTrial.getUser().getId(), userId)) {
+        if (userId == null || !Objects.equals(churchTrial.getUser().getId(), userId)) {
             return;
         }
 
