@@ -42,6 +42,15 @@ public class UserController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
     }
 
+    @DeleteMapping("/user/withdraw")
+    public ResponseEntity<BaseResponse> withDraw(){
+        try{
+            userService.withDraw();
+            return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
+    }
     @GetMapping("/info")
     public ResponseEntity<BaseResponse<UserInfoRes>> ChurchbyUser(){
         try {
