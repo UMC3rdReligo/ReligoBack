@@ -68,7 +68,7 @@ public class ChurchController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
         }
     }
-    
+
     @PatchMapping("/{churchId}")
     public ResponseEntity<BaseResponse<Boolean>> updateChurch(@PathVariable("churchId") Long churchId,
                                                               @Valid @RequestBody UpdateChurchRequest request) {
@@ -153,10 +153,17 @@ public class ChurchController {
         return ResponseEntity.ok(new BaseResponse<>(true));
     }
 
-    @DeleteMapping("/trials/{trialId}")
+    @DeleteMapping("/trials/me/{trialId}")
     public ResponseEntity<BaseResponse<Boolean>> withdrawChurchTrial(@PathVariable("trialId") Long trialId) {
         Long userId = this.jwtService.getId();
         this.churchCheckInService.withdrawChurchTrial(userId, trialId);
+        return ResponseEntity.ok(new BaseResponse<>(true));
+    }
+
+    @DeleteMapping("/members/me")
+    public ResponseEntity<BaseResponse<Boolean>> withdrawChurchMember() {
+        Long userId = this.jwtService.getId();
+        this.churchCheckInService.withdrawChurchMember(userId);
         return ResponseEntity.ok(new BaseResponse<>(true));
     }
 

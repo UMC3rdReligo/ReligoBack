@@ -85,6 +85,17 @@ public class ChurchCheckInServiceImpl implements ChurchCheckInService {
     }
 
     @Override
+    public void withdrawChurchMember(Long userId) {
+        User user = this.userRepository.findWithJoinByIdAndStatus(userId, User.UserStatus.ACTIVE).orElse(null);
+
+        if (user == null) {
+            return;
+        }
+
+        user.withdrawChurch();
+    }
+
+    @Override
     public void withdrawChurchTrial(Long userId, Long trialId) {
         ChurchTrial churchTrial = this.churchTrialRepository.findById(trialId).orElse(null);
 
@@ -93,7 +104,7 @@ public class ChurchCheckInServiceImpl implements ChurchCheckInService {
         }
 
         if (!Objects.equals(churchTrial.getUser().getId(), userId)) {
-            throw new BaseException(BaseResponseStatus.FORBIDDEN);
+            return;
         }
 
         churchTrial.delete();
