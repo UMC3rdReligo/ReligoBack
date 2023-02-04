@@ -41,7 +41,7 @@ public class ChurchController {
 
     @PostMapping("")
     public ResponseEntity<BaseResponse<Long>> createChurch(@Valid @RequestBody CreateChurchRequest request) {
-        CreateOrUpdateChurchParam param = new CreateOrUpdateChurchParam();
+        CreateChurchParam param = new CreateChurchParam();
         param.setPlatformCode(StringUtils.trimToEmpty(request.getPlatformCode()));
         param.setLocationCode(StringUtils.trimToEmpty(request.getLocationCode()));
         param.setName(StringUtils.trimToEmpty(request.getName()));
@@ -72,7 +72,7 @@ public class ChurchController {
     @PatchMapping("/{churchId}")
     public ResponseEntity<BaseResponse<Boolean>> updateChurch(@PathVariable("churchId") Long churchId,
                                                               @Valid @RequestBody UpdateChurchRequest request) {
-        CreateOrUpdateChurchParam param = new CreateOrUpdateChurchParam();
+        UpdateChurchParam param = new UpdateChurchParam();
         param.setId(churchId);
         param.setPlatformCode(StringUtils.trim(request.getPlatformCode()));
         param.setLocationCode(StringUtils.trim(request.getLocationCode()));
