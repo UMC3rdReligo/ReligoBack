@@ -2,9 +2,11 @@ package com.umcreligo.umcback.global.config.security;
 
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import com.umcreligo.umcback.global.config.security.jwt.KakaoOAuthService;
+import com.umcreligo.umcback.global.config.security.jwt.NaverOAuthService;
 import com.umcreligo.umcback.global.config.security.jwt.filter.JwtAuthenticationFilter;
 import com.umcreligo.umcback.global.config.security.jwt.filter.JwtAuthorizationFilter;
-import com.umcreligo.umcback.global.config.security.jwt.filter.OauthAuthenticationFilter;
+import com.umcreligo.umcback.global.config.security.jwt.filter.KakaoAuthenticationFilter;
+import com.umcreligo.umcback.global.config.security.jwt.filter.NaverAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +37,8 @@ public class SecurityConfig {
     private final AuthenticationManagerBuilder authManagerBuilder;
     private final KakaoOAuthService kakaoOAuthService;
 
+    private final NaverOAuthService naverOAuthService;
+
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -60,11 +64,18 @@ public class SecurityConfig {
         authenticationFilter.setAuthenticationSuccessHandler(successHandler);
         authenticationFilter.setAuthenticationFailureHandler(failureHandler);
 
-        OauthAuthenticationFilter customKakaoAuthenticationFilter
-            = new OauthAuthenticationFilter(kakaoOAuthService, userRepository, authManagerBuilder.getOrBuild(),passwordEncoder,entityManagerFactory);
+        KakaoAuthenticationFilter customKakaoAuthenticationFilter
+            = new KakaoAuthenticationFilter(kakaoOAuthService, userRepository, authManagerBuilder.getOrBuild(),passwordEncoder,entityManagerFactory);
         customKakaoAuthenticationFilter.setFilterProcessesUrl("/user/kakao");
         customKakaoAuthenticationFilter.setAuthenticationSuccessHandler(successHandler);
         customKakaoAuthenticationFilter.setAuthenticationFailureHandler(failureHandler);
+
+        NaverAuthenticationFilter customNaverAuthenticationFilter
+            = new NaverAuthenticationFilter(naverOAuthService, userRepository, authManagerBuilder.getOrBuild(),passwordEncoder,entityManagerFactory);
+        customNaverAuthenticationFilter.setFilterProcessesUrl("/user/naver");
+        customNaverAuthenticationFilter.setAuthenticationSuccessHandler(successHandler);
+        customNaverAuthenticationFilter.setAuthenticationFailureHandler(failureHandler);
+
 
 
         http.csrf().disable()

@@ -4,6 +4,8 @@ import com.umcreligo.umcback.domain.user.domain.User;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import com.umcreligo.umcback.global.config.security.jwt.KakaoOAuthService;
 import com.umcreligo.umcback.global.config.security.jwt.KakaoProfile;
+import com.umcreligo.umcback.global.config.security.jwt.NaverOAuthService;
+import com.umcreligo.umcback.global.config.security.jwt.NaverProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,10 +27,9 @@ import static com.umcreligo.umcback.global.config.security.jwt.JwtService.TOKEN_
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
-public class OauthAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class NaverAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-
-    private final KakaoOAuthService kakaoOAuthService;
+    private final NaverOAuthService naverOAuthService;
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
 
@@ -44,15 +45,15 @@ public class OauthAuthenticationFilter extends UsernamePasswordAuthenticationFil
             throw new AuthenticationCredentialsNotFoundException("AccessToken이 존재하지 않습니다.");
         }
         String accessToken = authorizationHeader.substring(TOKEN_HEADER_PREFIX.length());
-        KakaoProfile kakaoProfile = kakaoOAuthService.getKakaoProfileWithAccessToken(accessToken);
-        String email = (String) kakaoProfile.getKakao_account().get("email");
-        email +="kakao";
+        NaverProfile naverProfile = naverOAuthService.getKakaoProfileWithAccessToken(accessToken);
+        String email = (String) naverProfile.getResponse().get("email");
+        email +="naver";
         Optional<User> option = userRepository.findByEmail(email);
         if(!option.isPresent()){
             //디비 저장하기 위한 transaction 만들기
             EntityTransaction transaction = em.getTransaction();
             transaction.begin();
-            String password = "kakao";
+            String password = "naver";
             String encodedPassword = passwordEncoder.encode(password);
             User user = new User();
             user.setEmail(email);
@@ -62,7 +63,7 @@ public class OauthAuthenticationFilter extends UsernamePasswordAuthenticationFil
             transaction.commit();
 
         }
-        Authentication auth = new UsernamePasswordAuthenticationToken(email,"kakao" );
+        Authentication auth = new UsernamePasswordAuthenticationToken(email,"naver" );
         return authenticationManager.authenticate(auth);
     }
 }
