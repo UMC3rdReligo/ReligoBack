@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CreateOrUpdateChurchParam {
+public class UpdateChurchParam {
     private Long id;
     private String platformCode;
     private String locationCode;

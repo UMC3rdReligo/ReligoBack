@@ -78,6 +78,11 @@ public class UserService {
 
     }
 
+    public void withDraw() throws NoSuchElementException{
+        User user = userRepository.findByEmail(jwtService.getEmail()).orElseThrow();
+        user.setStatus(User.UserStatus.DELETED);
+    }
+
     public void logout() {
         User user = userRepository.findById(jwtService.getId())
             .orElseThrow(() -> new JwtException(USER_NOT_FOUND));
