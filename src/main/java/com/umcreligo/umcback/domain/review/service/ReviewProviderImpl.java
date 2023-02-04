@@ -35,7 +35,14 @@ public class ReviewProviderImpl implements ReviewProvider {
 
     @Override
     public Page<FindReviewResult> findChurchReviews(Long requestedByUserId, Long churchId, Pageable pageable) {
-        Page<Review> reviews = this.reviewRepository.findAllWithJoinByChurchIdAndStatusOrderByIdDesc(churchId, Review.ReviewStatus.ACTIVE, pageable);
+        Page<Review> reviews;
+
+        if (churchId != null) {
+            reviews = this.reviewRepository.findAllWithJoinByChurchIdAndStatusOrderByIdDesc(churchId, Review.ReviewStatus.ACTIVE, pageable);
+        } else {
+            reviews = this.reviewRepository.findAllWithJoinByStatusOrderByIdDesc(Review.ReviewStatus.ACTIVE, pageable);
+        }
+
         List<FindReviewResult> results = reviews.stream()
             .map(review -> this.createFindReviewResult(requestedByUserId, review))
             .collect(Collectors.toList());
@@ -44,8 +51,17 @@ public class ReviewProviderImpl implements ReviewProvider {
     }
 
     @Override
-    public Page<FindReviewResult> findMyReviews(Long requestedByUserId, Pageable pageable) {
-        Page<Review> reviews = this.reviewRepository.findAllWithJoinByUserIdAndStatusOrderByIdDesc(requestedByUserId, Review.ReviewStatus.ACTIVE, pageable);
+    public Page<FindReviewResult> findMyReviews(Long requestedByUserId, Long churchId, Pageable pageable) {
+        Page<Review> reviews;
+
+        if (churchId != null) {
+            reviews = this.reviewRepository.findAllWithJoinByChurchIdAndUserIdAndStatusOrderByIdDesc(
+                churchId, requestedByUserId, Review.ReviewStatus.ACTIVE, pageable);
+        } else {
+            reviews = this.reviewRepository.findAllWithJoinByUserIdAndStatusOrderByIdDesc(
+                requestedByUserId, Review.ReviewStatus.ACTIVE, pageable);
+        }
+
         List<FindReviewResult> results = reviews.stream()
             .map(review -> this.createFindReviewResult(requestedByUserId, review))
             .collect(Collectors.toList());
