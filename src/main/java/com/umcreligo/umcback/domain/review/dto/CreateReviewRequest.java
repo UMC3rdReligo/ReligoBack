@@ -12,7 +12,7 @@ public class CreateReviewRequest {
     private Long churchId;
 
     @NotBlank(message = "must not be blank")
-    @Size(max = 100, message = "size must be between 0 and 300")
+    @Size(max = 100, message = "size must be between 0 and 100")
     private String title;
 
     @NotBlank(message = "must not be blank")

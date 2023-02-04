@@ -28,7 +28,7 @@ public class ReviewController {
     private final JwtService jwtService;
 
     @GetMapping("")
-    public ResponseEntity<BaseResponse<FindReviewsResponse>> findChurchReviews(@RequestParam("churchId") Long churchId,
+    public ResponseEntity<BaseResponse<FindReviewsResponse>> findChurchReviews(@RequestParam(value = "churchId", required = false) Long churchId,
                                                                                @RequestParam(value = "page", defaultValue = "1")
                                                                                @Positive(message = "must be greater than 0")
                                                                                Integer page) {
@@ -86,11 +86,12 @@ public class ReviewController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<BaseResponse<FindReviewsResponse>> findMyReviews(@RequestParam(value = "page", defaultValue = "1")
+    public ResponseEntity<BaseResponse<FindReviewsResponse>> findMyReviews(@RequestParam(value = "churchId", required = false) Long churchId,
+                                                                           @RequestParam(value = "page", defaultValue = "1")
                                                                            @Positive(message = "must be greater than 0")
                                                                            Integer page) {
         Long userId = this.jwtService.getId();
-        Page<FindReviewResult> reviews = this.reviewProvider.findMyReviews(userId, PageRequest.of(page - 1, 20));
+        Page<FindReviewResult> reviews = this.reviewProvider.findMyReviews(userId, churchId, PageRequest.of(page - 1, 20));
         return this.createFindReviewsResponseEntity(reviews);
     }
 

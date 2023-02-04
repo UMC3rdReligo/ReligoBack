@@ -13,10 +13,16 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findWithJoinByIdAndStatus(Long reviewId, Review.ReviewStatus reviewStatus);
 
     @EntityGraph(attributePaths = {"user", "church"}, type = EntityGraph.EntityGraphType.LOAD)
-    Page<Review> findAllWithJoinByChurchIdAndStatusOrderByIdDesc(Long churchId, Review.ReviewStatus reviewStatus, Pageable pageable);
+    Page<Review> findAllWithJoinByStatusOrderByIdDesc(Review.ReviewStatus reviewStatus, Pageable pageable);
 
     @EntityGraph(attributePaths = {"user", "church"}, type = EntityGraph.EntityGraphType.LOAD)
     Page<Review> findAllWithJoinByUserIdAndStatusOrderByIdDesc(Long userId, Review.ReviewStatus reviewStatus, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"user", "church"}, type = EntityGraph.EntityGraphType.LOAD)
+    Page<Review> findAllWithJoinByChurchIdAndStatusOrderByIdDesc(Long churchId, Review.ReviewStatus reviewStatus, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"user", "church"}, type = EntityGraph.EntityGraphType.LOAD)
+    Page<Review> findAllWithJoinByChurchIdAndUserIdAndStatusOrderByIdDesc(Long churchId, Long userId, Review.ReviewStatus reviewStatus, Pageable pageable);
 
     boolean existsByUserIdAndChurchIdAndStatus(Long userId, Long churchId, Review.ReviewStatus reviewStatus);
 }

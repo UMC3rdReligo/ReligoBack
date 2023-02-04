@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 @Data
 public class UpdateReviewRequest {
     @NullOrNotBlank
-    @Size(max = 100, message = "size must be between 0 and 300")
+    @Size(max = 100, message = "size must be between 0 and 100")
     private String title;
 
     @NullOrNotBlank

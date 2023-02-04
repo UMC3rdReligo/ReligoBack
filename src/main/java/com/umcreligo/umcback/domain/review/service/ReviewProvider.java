@@ -11,5 +11,5 @@ public interface ReviewProvider {
 
     Page<FindReviewResult> findChurchReviews(Long requestedByUserId, Long churchId, Pageable pageable);
 
-    Page<FindReviewResult> findMyReviews(Long requestedByUserId, Pageable pageable);
+    Page<FindReviewResult> findMyReviews(Long requestedByUserId, Long churchId, Pageable pageable);
 }

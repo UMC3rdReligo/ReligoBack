@@ -5,13 +5,12 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.NoArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,7 +48,9 @@ public class S3Service {
     }
 
     public String upload(MultipartFile multipartFile) throws IOException {
-        String s3FileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
+        String fileName = UUID.randomUUID().toString();
+        String extension = StringUtils.trimToNull(FilenameUtils.getExtension(multipartFile.getOriginalFilename()));
+        String s3FileName = (extension != null) ? (fileName + "." + extension) : fileName;
 
         //파일 사이즈를 s3에 알려줌
         ObjectMetadata objMeta = new ObjectMetadata();
@@ -58,10 +59,10 @@ public class S3Service {
 
         s3Client.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);
 
-        return CLOUD_FRONT_DOMAIN_NAME + "/" +s3FileName;
+        return CLOUD_FRONT_DOMAIN_NAME + "/" + s3FileName;
     }
+
     public void deleteFile(String fileName) {
         s3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
-
     }
 }

@@ -4,7 +4,8 @@ import com.umcreligo.umcback.domain.church.domain.Church;
 import com.umcreligo.umcback.domain.church.domain.ChurchHashTag;
 import com.umcreligo.umcback.domain.church.domain.ChurchImage;
 import com.umcreligo.umcback.domain.church.domain.Platform;
-import com.umcreligo.umcback.domain.church.dto.CreateOrUpdateChurchParam;
+import com.umcreligo.umcback.domain.church.dto.CreateChurchParam;
+import com.umcreligo.umcback.domain.church.dto.UpdateChurchParam;
 import com.umcreligo.umcback.domain.church.repository.ChurchHashTagRepository;
 import com.umcreligo.umcback.domain.church.repository.ChurchImageRepository;
 import com.umcreligo.umcback.domain.church.repository.ChurchRepository;
@@ -36,7 +37,7 @@ public class ChurchServiceImpl implements ChurchService {
     private final HashTagRepository hashTagRepository;
 
     @Override
-    public Long createChurch(CreateOrUpdateChurchParam param) {
+    public Long createChurch(CreateChurchParam param) {
         Platform platform = this.platformRepository.findById(param.getPlatformCode()).orElse(null);
 
         if (platform == null) {
@@ -97,7 +98,7 @@ public class ChurchServiceImpl implements ChurchService {
     }
 
     @Override
-    public void updateChurch(CreateOrUpdateChurchParam param) {
+    public void updateChurch(UpdateChurchParam param) {
         Church church = this.churchRepository.findWithJoinByIdAndStatus(param.getId(), Church.ChurchStatus.ACTIVE).orElse(null);
 
         if (church == null) {
