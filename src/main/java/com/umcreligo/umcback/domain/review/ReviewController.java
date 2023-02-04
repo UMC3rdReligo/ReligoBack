@@ -28,7 +28,7 @@ public class ReviewController {
     private final JwtService jwtService;
 
     @GetMapping("")
-    public ResponseEntity<BaseResponse<FindReviewsResponse>> findChurchReviews(@RequestParam("churchId") Long churchId,
+    public ResponseEntity<BaseResponse<FindReviewsResponse>> findChurchReviews(@RequestParam(value = "churchId", required = false) Long churchId,
                                                                                @RequestParam(value = "page", defaultValue = "1")
                                                                                @Positive(message = "must be greater than 0")
                                                                                Integer page) {
