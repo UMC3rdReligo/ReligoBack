@@ -1,8 +1,10 @@
 package com.umcreligo.umcback.global.config.security;
 
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
+import com.umcreligo.umcback.global.config.security.jwt.KakaoOAuthService;
 import com.umcreligo.umcback.global.config.security.jwt.filter.JwtAuthenticationFilter;
 import com.umcreligo.umcback.global.config.security.jwt.filter.JwtAuthorizationFilter;
+import com.umcreligo.umcback.global.config.security.jwt.filter.OauthAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +33,7 @@ public class SecurityConfig {
     private final AuthenticationSuccessHandler successHandler;
     private final AuthenticationFailureHandler failureHandler;
     private final AuthenticationManagerBuilder authManagerBuilder;
+    private final KakaoOAuthService kakaoOAuthService;
 
     private final UserRepository userRepository;
 
@@ -56,6 +59,13 @@ public class SecurityConfig {
         authenticationFilter.setFilterProcessesUrl("/user/login");
         authenticationFilter.setAuthenticationSuccessHandler(successHandler);
         authenticationFilter.setAuthenticationFailureHandler(failureHandler);
+
+        OauthAuthenticationFilter customKakaoAuthenticationFilter
+            = new OauthAuthenticationFilter(kakaoOAuthService, userRepository, authManagerBuilder.getOrBuild(),passwordEncoder,entityManagerFactory);
+        customKakaoAuthenticationFilter.setFilterProcessesUrl("/user/kakao");
+        customKakaoAuthenticationFilter.setAuthenticationSuccessHandler(successHandler);
+        customKakaoAuthenticationFilter.setAuthenticationFailureHandler(failureHandler);
+
 
         http.csrf().disable()
                 .sessionManagement()
