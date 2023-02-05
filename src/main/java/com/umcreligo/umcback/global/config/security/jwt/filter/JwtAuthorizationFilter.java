@@ -40,6 +40,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter { //Jwt올바�
         return (
                 // TODO 인증이 필요없는 로직 추가
             (pathMatcher.match("/user/login", path) && request.getMethod().equals("POST")) ||
+                (pathMatcher.match("/user/kakao", path) && request.getMethod().equals("POST")) ||
+                (pathMatcher.match("/user/naver", path) && request.getMethod().equals("POST")) ||
                     pathMatcher.match("/swagger-ui/**", path) ||
                     pathMatcher.match("/favicon.ico", path) ||
                 pathMatcher.match("/swagger-resources/**", path) ||
