@@ -30,7 +30,7 @@ public class KakaoOAuthService {
 
             ResponseEntity<String> response = rt.exchange(
                 Kakao_PROFILE_URL,
-                HttpMethod.POST,
+                HttpMethod.GET,
                 request,
                 String.class
             );
