@@ -15,10 +15,9 @@ public class PrincipalUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        System.out.println(email);
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("가입된 이메일이 존재하지 않습니다."));
+    public UserDetails loadUserByUsername(String oauthId) throws UsernameNotFoundException {
+        User user = userRepository.findByAuthId(oauthId)
+                .orElseThrow(() -> new UsernameNotFoundException("가입된 회원이 존재하지 않습니다."));
         return new PrincipalUserDetails(user);
     }
 }

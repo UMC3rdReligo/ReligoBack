@@ -57,19 +57,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String email = helloData.getEmail();
         String password = helloData.getPassword();
         //첫 로그인 일시 만 저장함
-        Optional<User> option = userRepository.findByEmail(email);
+        Optional<User> option = userRepository.findByAuthId(email);
         if(!option.isPresent()){
             //디비 저장하기 위한 transaction 만들기
             EntityTransaction transaction = em.getTransaction();
             transaction.begin();
             String encodedPassword = passwordEncoder.encode(password);
             User user = new User();
-            user.setEmail(email);
+            user.setAuthId(email);
             user.setPassword(encodedPassword);
             user.setStatus(User.UserStatus.ACTIVE);
             userRepository.save(user);
             transaction.commit();
-
         }
         Authentication authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
         Authentication authentication =

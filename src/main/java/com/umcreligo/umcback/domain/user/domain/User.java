@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -26,6 +27,9 @@ public class User {
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "user_id")
     private Long id;
+
+    @Column
+    private String authId;
 
     @Column
     private String name;
@@ -46,7 +50,7 @@ public class User {
     @Column
     private String gender;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private Role role;
 
     @Column
@@ -58,7 +62,7 @@ public class User {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private UserStatus status;
 
     @Column
@@ -78,9 +82,17 @@ public class User {
     @Column
     private String refreshToken;
 
+    @Column
+    @Enumerated(value = STRING)
+    private SocialType socialType;
+
     public enum UserStatus {
         ACTIVE,
         DELETED
+    }
+    public enum SocialType {
+        KAKAO,
+        NAVER
     }
 
     public void updateRefreshToken(String refreshToken) {

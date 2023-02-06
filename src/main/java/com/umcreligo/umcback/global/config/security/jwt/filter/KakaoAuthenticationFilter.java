@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -45,24 +46,34 @@ public class KakaoAuthenticationFilter extends UsernamePasswordAuthenticationFil
         }
         String accessToken = authorizationHeader.substring(TOKEN_HEADER_PREFIX.length());
         KakaoProfile kakaoProfile = kakaoOAuthService.getKakaoProfileWithAccessToken(accessToken);
-        String email = (String) kakaoProfile.getKakao_account().get("email");
-        email +="kakao";
-        Optional<User> option = userRepository.findByEmail(email);
+        Long kakaoId = kakaoProfile.getId();
+        if(kakaoId==null) {
+            throw new UsernameNotFoundException("요청 값이 없습니다.");
+        }
+        String OauthId = Long.toString(kakaoId);
+        //네이버Id 랑 겹칠 수도 있기에 뒤에 kakao를 붙였습니다.
+        OauthId += "kakao";
+        Optional<User> option = userRepository.findByAuthId(OauthId);
         if(!option.isPresent()){
             //디비 저장하기 위한 transaction 만들기
             EntityTransaction transaction = em.getTransaction();
             transaction.begin();
             String password = "kakao";
             String encodedPassword = passwordEncoder.encode(password);
+            String email = ((String) kakaoProfile.getKakao_account().get("email")==null) ? "":(String) kakaoProfile.getKakao_account().get("email");
+            String gender = ((String) kakaoProfile.getKakao_account().get("gender")==null)? "":(String) kakaoProfile.getKakao_account().get("gender");
             User user = new User();
             user.setEmail(email);
+            user.setAuthId(OauthId);
             user.setPassword(encodedPassword);
             user.setStatus(User.UserStatus.ACTIVE);
+            user.setSocialType(User.SocialType.KAKAO);
+            user.setGender(gender);
             userRepository.save(user);
             transaction.commit();
 
         }
-        Authentication auth = new UsernamePasswordAuthenticationToken(email,"kakao" );
+        Authentication auth = new UsernamePasswordAuthenticationToken(OauthId,"kakao" );
         return authenticationManager.authenticate(auth);
     }
 }

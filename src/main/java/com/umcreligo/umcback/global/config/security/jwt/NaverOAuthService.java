@@ -30,7 +30,7 @@ public class NaverOAuthService {
 
             ResponseEntity<String> response = rt.exchange(
                 Naver_PROFILE_URL,
-                HttpMethod.POST,
+                HttpMethod.GET,
                 request,
                 String.class
             );
