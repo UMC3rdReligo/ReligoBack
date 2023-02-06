@@ -7,6 +7,7 @@ import com.umcreligo.umcback.global.config.security.jwt.KakaoProfile;
 import com.umcreligo.umcback.global.config.security.jwt.NaverOAuthService;
 import com.umcreligo.umcback.global.config.security.jwt.NaverProfile;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,7 +49,7 @@ public class NaverAuthenticationFilter extends UsernamePasswordAuthenticationFil
         String accessToken = authorizationHeader.substring(TOKEN_HEADER_PREFIX.length());
         NaverProfile naverProfile = naverOAuthService.getKakaoProfileWithAccessToken(accessToken);
         String OauthId = (String) naverProfile.getResponse().get("id");
-        if(OauthId==null) {
+        if(StringUtils.isBlank(OauthId)) {
             throw new UsernameNotFoundException("가입된 회원이 존재하지 않습니다.");
         }
         //kakaoId랑 겹칠 가능성이 있기에 뒤에 naver를 붙여줬습니다.
