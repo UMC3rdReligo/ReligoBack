@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -47,8 +48,10 @@ public class NaverAuthenticationFilter extends UsernamePasswordAuthenticationFil
         String accessToken = authorizationHeader.substring(TOKEN_HEADER_PREFIX.length());
         NaverProfile naverProfile = naverOAuthService.getKakaoProfileWithAccessToken(accessToken);
         String email = (String) naverProfile.getResponse().get("email");
-        email +="naver";
-        Optional<User> option = userRepository.findByEmail(email);
+        if(email==null) {
+            throw new UsernameNotFoundException("가입된 이메일이 존재하지 않습니다.");
+        }
+        Optional<User> option = userRepository.findByEmailAndStatusAndSocialType(email, User.UserStatus.ACTIVE, User.SocialType.NAVER);
         if(!option.isPresent()){
             //디비 저장하기 위한 transaction 만들기
             EntityTransaction transaction = em.getTransaction();
@@ -59,6 +62,7 @@ public class NaverAuthenticationFilter extends UsernamePasswordAuthenticationFil
             user.setEmail(email);
             user.setPassword(encodedPassword);
             user.setStatus(User.UserStatus.ACTIVE);
+            user.setSocialType(User.SocialType.NAVER);
             userRepository.save(user);
             transaction.commit();
 

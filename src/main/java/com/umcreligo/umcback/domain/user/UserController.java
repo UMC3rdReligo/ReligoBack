@@ -1,6 +1,5 @@
 package com.umcreligo.umcback.domain.user;
 
-import com.umcreligo.umcback.domain.user.dto.LoginTokenRes;
 import com.umcreligo.umcback.domain.user.dto.SignUpReq;
 import com.umcreligo.umcback.domain.user.dto.UserInfoRes;
 import com.umcreligo.umcback.domain.user.service.UserService;
@@ -12,11 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.NoSuchElementException;
 
 import static com.umcreligo.umcback.global.config.BaseResponseStatus.*;
-import static com.umcreligo.umcback.global.config.security.ValidationRegex.isRegexNickName;
+import static com.umcreligo.umcback.global.config.validation.ValidationRegex.isRegexNickName;
 
 @RequiredArgsConstructor
 @RestController

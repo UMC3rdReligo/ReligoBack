@@ -1,4 +1,4 @@
-package com.umcreligo.umcback.global.config.security;
+package com.umcreligo.umcback.global.config.validation;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

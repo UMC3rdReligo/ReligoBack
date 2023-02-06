@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -46,8 +47,14 @@ public class KakaoAuthenticationFilter extends UsernamePasswordAuthenticationFil
         String accessToken = authorizationHeader.substring(TOKEN_HEADER_PREFIX.length());
         KakaoProfile kakaoProfile = kakaoOAuthService.getKakaoProfileWithAccessToken(accessToken);
         String email = (String) kakaoProfile.getKakao_account().get("email");
-        email +="kakao";
-        Optional<User> option = userRepository.findByEmail(email);
+        Long kakaoId = kakaoProfile.getId();
+        if(kakaoId==null) {
+            throw new UsernameNotFoundException("요청 값이 없습니다.");
+        }
+        if(email ==null){
+            email = "kakao" + kakaoId;
+        }
+        Optional<User> option = userRepository.findByEmailAndStatusAndSocialType(email, User.UserStatus.ACTIVE, User.SocialType.KAKAO);
         if(!option.isPresent()){
             //디비 저장하기 위한 transaction 만들기
             EntityTransaction transaction = em.getTransaction();
@@ -58,6 +65,7 @@ public class KakaoAuthenticationFilter extends UsernamePasswordAuthenticationFil
             user.setEmail(email);
             user.setPassword(encodedPassword);
             user.setStatus(User.UserStatus.ACTIVE);
+            user.setSocialType(User.SocialType.KAKAO);
             userRepository.save(user);
             transaction.commit();
 

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 public enum BaseResponseStatus {
     SUCCESS(true, HttpStatus.OK, 200, "요청에 성공하였습니다."),
     BAD_REQUEST(false, HttpStatus.BAD_REQUEST, 400, "입력값을 확인해주세요."),
+    UNAUTHORIZED(false, HttpStatus.UNAUTHORIZED, 403, "입력값을 확인해주세요."),
     FORBIDDEN(false, HttpStatus.FORBIDDEN, 403, "권한이 없습니다."),
     NOT_FOUND(false, HttpStatus.NOT_FOUND, 404, "대상을 찾을 수 없습니다."),
     INVALID_USER_ID(false, HttpStatus.BAD_REQUEST, 10001, "유저를 찾을 수 없습니다."),

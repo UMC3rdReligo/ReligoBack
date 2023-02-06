@@ -74,7 +74,7 @@ public class JwtExceptionHandler {
 
     @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
     public ResponseEntity<BaseResponse> handleAuthenticationCredentialsNotFoundException(HttpMessageNotReadableException e) {
-        return ResponseEntity.badRequest().body(new BaseResponse<>(BaseResponseStatus.BAD_REQUEST));
+        return ResponseEntity.badRequest().body(new BaseResponse<>(BaseResponseStatus.UNAUTHORIZED));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
