@@ -34,9 +34,9 @@ public class UserSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         PrincipalUserDetails userDetails = (PrincipalUserDetails) authentication.getPrincipal();
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("가입된 이메일이 존재하지 않습니다."));
-        if(user.getStatus()== User.UserStatus.ACTIVE){
+        User user = userRepository.findByAuthId(userDetails.getUsername())
+            .orElseThrow(() -> new UsernameNotFoundException("가입된 회원이 존재하지 않습니다."));
+        if(user.getStatus().equals(User.UserStatus.ACTIVE)){
             String signYN;
             //Auth 로그인 시 가입이 되어있는지 체크
             if(user.getNickname()== null){

@@ -29,6 +29,9 @@ public class User {
     private Long id;
 
     @Column
+    private String authId;
+
+    @Column
     private String name;
     @Column
     private String password;

@@ -23,10 +23,10 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String email = authentication.getName();
+        String authId = authentication.getName();
         String password = (String) authentication.getCredentials();
 
-        PrincipalUserDetails userDetails = (PrincipalUserDetails) userDetailsService.loadUserByUsername(email);
+        PrincipalUserDetails userDetails = (PrincipalUserDetails) userDetailsService.loadUserByUsername(authId);
         // 비밀번호 확인
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
