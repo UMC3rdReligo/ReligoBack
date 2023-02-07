@@ -188,12 +188,4 @@ public class CommunityService {
         if (duration.toMinutes() < 3) return true;
         else return false;
     }
-
-    //DTO JSON 확인용
-    public SaveArticleReq test(){
-        return new SaveArticleReq();
-    }
-    public FindArticleRes test2(){
-        return new FindArticleRes();
-    }
 }
