@@ -25,4 +25,8 @@ public class FindArticleRes {
     private Map<String,Object> comments;
 
     private boolean isHearted;
+
+    private boolean isRecently;
+
+    private String createAt;
 }
