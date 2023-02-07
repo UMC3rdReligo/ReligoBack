@@ -10,6 +10,7 @@ import lombok.Setter;
 public class UserInfoRes {
     private String name;
     private String nickname;
+    private String email;
     private String address;
     private String locationCode;
     private String userAddress1;
