@@ -98,6 +98,7 @@ public class UserService {
         UserInfoRes UserInfoRes = new UserInfoRes();
         UserInfoRes.setName(user.getName() == null ? "" : user.getName());
         UserInfoRes.setNickname(user.getNickname() == null ? "" : user.getNickname());
+        UserInfoRes.setEmail(user.getEmail());
         UserInfoRes.setAddress(user.getAddress() == null ? "" : user.getAddress());
         UserInfoRes.setLocationCode(user.getLocation() == null ? "" : user.getLocation().getCode());
         UserInfoRes.setUserAddress1(user.getLocation() == null ? "" : user.getLocation().getAddress1());

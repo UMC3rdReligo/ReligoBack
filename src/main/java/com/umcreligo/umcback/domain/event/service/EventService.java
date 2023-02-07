@@ -28,6 +28,10 @@ public class EventService {
         eventRepository.save(event);
     }
 
+    public List<Event> getEvents(){
+        return eventRepository.findAll();
+    }
+
     public Event getEvent(long id) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 이벤트입니다."));
         return event;
