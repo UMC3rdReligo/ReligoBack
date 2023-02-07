@@ -2,6 +2,7 @@ package com.umcreligo.umcback.domain.event;
 
 import com.umcreligo.umcback.domain.event.domain.Event;
 import com.umcreligo.umcback.domain.event.dto.CreateEventRequestDto;
+import com.umcreligo.umcback.domain.event.dto.EventsRes;
 import com.umcreligo.umcback.domain.event.dto.GetEventByChurchIdResponseDto;
 import com.umcreligo.umcback.domain.event.dto.GetEventByIdResponseDto;
 import com.umcreligo.umcback.domain.event.service.EventService;
@@ -33,5 +34,10 @@ public class EventController {
     @GetMapping("/churchId/{churchId}")
     public GetEventByChurchIdResponseDto findByChurchId(@PathVariable long churchId) {
         return new GetEventByChurchIdResponseDto(eventService.findByChurchId(churchId));
+    }
+
+    @GetMapping("/event/all")
+    public EventsRes allEvent(){
+        return new EventsRes(eventService.getEvents());
     }
 }
