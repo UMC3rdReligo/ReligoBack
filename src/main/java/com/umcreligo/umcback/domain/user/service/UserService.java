@@ -41,8 +41,8 @@ public class UserService {
     private final UserServeyRepository userServeyRepository;
 
     public void signup(SignUpReq signUpReq) throws NoSuchElementException {
-        User user = userRepository.findByEmail(jwtService.getEmail())
-            .orElseThrow(() -> new UsernameNotFoundException("가입된 이메일이 존재하지 않습니다."));
+        User user = userRepository.findById(jwtService.getId())
+            .orElseThrow(() -> new UsernameNotFoundException("유저가 존재하지 않습니다."));
         UserServey userServey1 = new UserServey("Q1", signUpReq.getQuestion_1(), user);
         userServeyRepository.save(userServey1);
         UserServey userServey2 = new UserServey("Q2", signUpReq.getQuestion_2(), user);
@@ -79,7 +79,7 @@ public class UserService {
     }
 
     public void withDraw() throws NoSuchElementException{
-        User user = userRepository.findByEmail(jwtService.getEmail()).orElseThrow();
+        User user = userRepository.findById(jwtService.getId()).orElseThrow();
         user.setStatus(User.UserStatus.DELETED);
     }
 
