@@ -45,8 +45,8 @@ public class ChurchProviderImpl implements ChurchProvider {
     private final UserServeyRepository userServeyRepository;
     private final ElasticsearchOperations elasticsearchOperations;
 
-    public List<FindChurchResult> findChurches(List<Long> churchIds) {
-        List<Church> churches = this.churchRepository.findAllWithJoinByIdInAndStatus(churchIds, Church.ChurchStatus.ACTIVE);
+    public List<FindChurchResult> findChurches(List<Long> orderedChurchIds) {
+        List<Church> churches = this.churchRepository.findAllWithJoinByIdInAndStatus(orderedChurchIds, Church.ChurchStatus.ACTIVE);
         List<Long> foundIds = churches.stream().map(Church::getId).collect(Collectors.toList());
         List<ChurchHashTag> hashTags = this.churchHashTagRepository.findAllByChurchIdInOrderByIdAsc(foundIds);
         List<ChurchImage> mainImages = this.churchImageRepository.findAllByChurchIdInAndTypeAndStatus(foundIds,
@@ -66,6 +66,19 @@ public class ChurchProviderImpl implements ChurchProvider {
                 .collect(Collectors.toList());
 
             return this.createFindChurchResult(church, myHashTags, myMainImages, myDetailImages);
+        }).sorted((o1, o2) -> {
+            int a = orderedChurchIds.indexOf(o1.getInfo().getId());
+            int b = orderedChurchIds.indexOf(o2.getInfo().getId());
+
+            if (a == -1 && b == -1) {
+                return 0;
+            } else if (a == -1) {
+                return 1;
+            } else if (b == -1) {
+                return -1;
+            } else {
+                return a - b;
+            }
         }).collect(Collectors.toList());
     }
 
