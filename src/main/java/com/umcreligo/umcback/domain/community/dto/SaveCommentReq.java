@@ -8,7 +8,5 @@ public class SaveCommentReq {
 
     private Long articleId;
 
-    private String email;
-
     private String text;
 }

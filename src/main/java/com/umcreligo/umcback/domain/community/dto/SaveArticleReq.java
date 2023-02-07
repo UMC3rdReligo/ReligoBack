@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 public class SaveArticleReq {
 
-    private String email;
-
     private String type;
 
     private Long churchId;
