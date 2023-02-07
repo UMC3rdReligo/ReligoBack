@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class HeartClickReq {
 
     private Long articleId;
-    private String email;
 }
