@@ -131,7 +131,7 @@ public class CommunityService {
             for(Comment comment:commentList){
                 commentMap.put("name",comment.getUser().getNickname());
                 commentMap.put("text",comment.getText());
-                commentMap.put("createdAt",comment.getCreatedAt());
+                commentMap.put("createdAt",comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             }
             findArticleRes.setComments(commentMap);
 
