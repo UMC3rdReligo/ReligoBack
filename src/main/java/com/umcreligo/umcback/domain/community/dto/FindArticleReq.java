@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 
 public class FindArticleReq {
 
-    private String email;
-
     private String platformCode;
 
     private Long churchId;

@@ -11,6 +11,7 @@ import com.umcreligo.umcback.domain.community.repository.CommentRepository;
 import com.umcreligo.umcback.domain.community.repository.UserArticleHeartRepository;
 import com.umcreligo.umcback.domain.user.domain.User;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
+import com.umcreligo.umcback.global.config.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -36,6 +34,7 @@ public class CommunityService {
     private final UserRepository userRepository;
 
     private final ChurchRepository churchRepository;
+    private final JwtService jwtService;
 
     private int FINDARTICLE_COUNT = 20;
     //전체 커뮤니티 내용 Type = TOTAL
@@ -57,7 +56,7 @@ public class CommunityService {
         Article article = new Article();
         article.setTitle(saveArticleReq.getTitle());
         article.setType(stringToType(saveArticleReq.getType()));
-        article.setUser(userRepository.findByEmail(saveArticleReq.getEmail()).get());
+        article.setUser(userRepository.findById(jwtService.getId()).get());
 
         article.setText(saveArticleReq.getText());
 
@@ -73,7 +72,7 @@ public class CommunityService {
     //댓글쓰기
     public void saveComment(SaveCommentReq saveCommentReq){
         Comment comment = new Comment();
-        comment.setUser(userRepository.findByEmail(saveCommentReq.getEmail()).get());
+        comment.setUser(userRepository.findById(jwtService.getId()).get());
         comment.setText(saveCommentReq.getText());
         comment.setArticle(articleRepository.findById(saveCommentReq.getArticleId()).get());
 
@@ -83,7 +82,7 @@ public class CommunityService {
     //좋아요 버튼 클릭시
     public void clickHeart(HeartClickReq heartClickReq){
         Article article = articleRepository.findById(heartClickReq.getArticleId()).get();
-        User user = userRepository.findByEmail(heartClickReq.getEmail()).get();
+        User user = userRepository.findById(jwtService.getId()).get();
         System.out.println(article.getTitle());
         System.out.println(user.getEmail());
         System.out.println(userArticleHeartRepository.existsByArticleAndUser(article,user));
@@ -107,7 +106,9 @@ public class CommunityService {
 
     public List<FindArticleRes> findArticle(List<Article> allArticles, FindArticleReq findArticleReq){
         List<FindArticleRes> resultList = new ArrayList<>();
-        User user = userRepository.findByEmail(findArticleReq.getEmail()).get();
+        Optional<User> optional = userRepository.findById(jwtService.getId());
+        User user =optional.get();
+
         if(allArticles.size() < 20){
             FINDARTICLE_COUNT = allArticles.size();
         }
