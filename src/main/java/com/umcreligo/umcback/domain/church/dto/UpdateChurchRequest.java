@@ -30,11 +30,9 @@ public class UpdateChurchRequest {
     @Size(max = 1000, message = "size must be between 0 and 1000")
     private String introduction;
 
-    @NullOrNotBlank
     @Size(max = 30, message = "size must be between 0 and 30")
     private String minister;
 
-    @NullOrNotBlank
     @Size(max = 1000, message = "size must be between 0 and 1000")
     private String schedule;
 
