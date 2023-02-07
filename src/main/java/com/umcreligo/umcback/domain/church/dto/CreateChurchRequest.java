@@ -29,11 +29,9 @@ public class CreateChurchRequest {
     @Size(max = 1000, message = "size must be between 0 and 1000")
     private String introduction;
 
-    @NotBlank(message = "must not be blank")
     @Size(max = 30, message = "size must be between 0 and 30")
     private String minister;
 
-    @NotBlank(message = "must not be blank")
     @Size(max = 1000, message = "size must be between 0 and 1000")
     private String schedule;
 
