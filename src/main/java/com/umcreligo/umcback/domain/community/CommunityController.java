@@ -104,14 +104,4 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
         }
     }
-
-    @GetMapping("/church")
-    public ResponseEntity<BaseResponse> test() {
-        return ResponseEntity.ok(new BaseResponse<>(communityService.test()));
-    }
-
-    @GetMapping("/church2")
-    public ResponseEntity<BaseResponse> test2() {
-        return ResponseEntity.ok(new BaseResponse<>(communityService.test2()));
-    }
 }

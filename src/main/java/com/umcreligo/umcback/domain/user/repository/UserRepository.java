@@ -9,10 +9,12 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
-    Optional<User> findById(String id);
-
     @EntityGraph(attributePaths = {"church", "location"}, type = EntityGraph.EntityGraphType.LOAD)
     Optional<User> findWithJoinByIdAndStatus(Long UserId, User.UserStatus status);
 
     boolean existsByNicknameAndStatus(String nickName, User.UserStatus status);
+
+    Optional<User> findByAuthId(String authId);
+
+    Optional<User> findByEmailAndStatusAndSocialType(String email, User.UserStatus status, User.SocialType type);
 }

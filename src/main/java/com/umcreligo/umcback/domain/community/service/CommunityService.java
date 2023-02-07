@@ -12,9 +12,14 @@ import com.umcreligo.umcback.domain.community.repository.UserArticleHeartReposit
 import com.umcreligo.umcback.domain.user.domain.User;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -118,8 +123,8 @@ public class CommunityService {
             findArticleRes.setArticleId(article.getId());
             findArticleRes.setWriter(article.getUser().getNickname());
             findArticleRes.setTitle(article.getTitle());
-
-
+            findArticleRes.setRecently(compareMinute(LocalDateTime.now(),article.getCreatedAt()));
+            findArticleRes.setCreateAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             //이름, 작성시간, 내용
             Map<String,Object> commentMap = new HashMap<>();
             for(Comment comment:commentList){
@@ -178,11 +183,9 @@ public class CommunityService {
             return "PC1";
     }
 
-    //DTO JSON 확인용
-    public SaveArticleReq test(){
-        return new SaveArticleReq();
-    }
-    public FindArticleRes test2(){
-        return new FindArticleRes();
+    public boolean compareMinute(LocalDateTime date1, LocalDateTime date2) {
+        Duration duration = Duration.between(date2, date1);
+        if (duration.toMinutes() < 3) return true;
+        else return false;
     }
 }
