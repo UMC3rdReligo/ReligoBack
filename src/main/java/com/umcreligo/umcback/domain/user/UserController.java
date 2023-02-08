@@ -40,7 +40,7 @@ public class UserController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
     }
 
-    @DeleteMapping("/user/withdraw")
+    @DeleteMapping("/withdraw")
     public ResponseEntity<BaseResponse> withDraw(){
         try{
             userService.withDraw();
@@ -50,7 +50,7 @@ public class UserController {
         }
     }
     @GetMapping("/info")
-    public ResponseEntity<BaseResponse<UserInfoRes>> ChurchbyUser(){
+    public ResponseEntity<BaseResponse<UserInfoRes>> infoByUser(){
         try {
             return ResponseEntity.ok(new BaseResponse<>(this.userService.findInfoByUser()));
         } catch (NoSuchElementException e) {
