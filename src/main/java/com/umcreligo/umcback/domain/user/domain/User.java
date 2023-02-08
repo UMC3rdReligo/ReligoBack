@@ -80,6 +80,9 @@ public class User {
     private String nickname;
 
     @Column
+    private String platform;  //선호하는 교단
+
+    @Column
     private String refreshToken;
 
     @Column
