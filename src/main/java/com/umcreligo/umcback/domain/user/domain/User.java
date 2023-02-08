@@ -65,7 +65,7 @@ public class User {
     @Enumerated(STRING)
     private UserStatus status;
 
-    @Column
+    @Column(length = 300)
     private String email;
 
     @Column(length = 300)
@@ -93,6 +93,7 @@ public class User {
         ACTIVE,
         DELETED
     }
+
     public enum SocialType {
         KAKAO,
         NAVER

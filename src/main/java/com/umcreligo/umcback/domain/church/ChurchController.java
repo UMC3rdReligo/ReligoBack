@@ -118,12 +118,13 @@ public class ChurchController {
         SignUpChurchMemberParam param = new SignUpChurchMemberParam();
         param.setUserId(userId);
         param.setChurchId(churchId);
-        param.setName(request.getName());
+        param.setName(StringUtils.trimToEmpty(request.getName()));
         param.setBirthday(request.getBirthday());
-        param.setPhoneNum(request.getPhoneNum());
-        param.setAddress(request.getAddress());
-        param.setReferee(request.getReferee());
-        param.setMessage(request.getMessage());
+        param.setPhoneNum(StringUtils.trimToEmpty(request.getPhoneNum()));
+        param.setAddress(StringUtils.trimToEmpty(request.getAddress()));
+        param.setEmail(StringUtils.trimToEmpty(request.getEmail()));
+        param.setReferee(StringUtils.trimToEmpty(request.getReferee()));
+        param.setMessage(StringUtils.trimToEmpty(request.getMessage()));
         param.setScheduledDateTime(request.getScheduledDate() != null ? request.getScheduledDate().atStartOfDay() : null);
 
         this.churchCheckInService.signUpChurchMember(param);
@@ -144,9 +145,9 @@ public class ChurchController {
         SignUpChurchTrialParam param = new SignUpChurchTrialParam();
         param.setUserId(userId);
         param.setChurchId(churchId);
-        param.setName(request.getName());
-        param.setPhoneNum(request.getPhoneNum());
-        param.setMessage(request.getMessage());
+        param.setName(StringUtils.trimToEmpty(request.getName()));
+        param.setPhoneNum(StringUtils.trimToEmpty(request.getPhoneNum()));
+        param.setMessage(StringUtils.trimToEmpty(request.getMessage()));
         param.setScheduledDateTime(request.getScheduledDate() != null ? request.getScheduledDate().atStartOfDay() : null);
 
         this.churchCheckInService.signUpChurchTrial(param);
