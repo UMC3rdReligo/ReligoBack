@@ -39,6 +39,7 @@ public class ChurchCheckInProviderImpl implements ChurchCheckInProvider {
         result.setBirthday(churchRegistration.getBirthday());
         result.setPhoneNum(churchRegistration.getPhoneNum());
         result.setAddress(churchRegistration.getAddress());
+        result.setEmail(churchRegistration.getEmail());
         result.setReferee(churchRegistration.getReferee());
         result.setMessage(churchRegistration.getMessage());
         result.setScheduledDateTime(churchRegistration.getScheduledDateTime());

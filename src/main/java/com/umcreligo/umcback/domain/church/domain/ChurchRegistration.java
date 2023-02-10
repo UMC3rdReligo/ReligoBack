@@ -42,6 +42,9 @@ public class ChurchRegistration {
     @Column(length = 300, nullable = false)
     private String address;
 
+    @Column(length = 300, nullable = false)
+    private String email;
+
     @Column(length = 45, nullable = false)
     private String referee;
 

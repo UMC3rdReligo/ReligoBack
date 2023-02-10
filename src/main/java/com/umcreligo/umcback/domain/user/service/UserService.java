@@ -64,6 +64,7 @@ public class UserService {
         signUpReq.getHashTag().forEach(hashtag -> SaveUserHashTag(hashtag, user));
         Location location = locationRepository.findById(signUpReq.getLocationCode()).orElseThrow();
         user.setLocation(location);
+        user.setPlatform(signUpReq.getQuestion_3());
         user.setAddress(signUpReq.getAddress());
         user.setNickname(signUpReq.getNickname());
     }
@@ -99,6 +100,8 @@ public class UserService {
         UserInfoRes.setName(user.getName() == null ? "" : user.getName());
         UserInfoRes.setNickname(user.getNickname() == null ? "" : user.getNickname());
         UserInfoRes.setEmail(user.getEmail());
+        UserInfoRes.setPhoneNum(user.getPhoneNum() == null ? "" : user.getPhoneNum());
+        UserInfoRes.setPlatform(user.getPlatform() == null ? "" : user.getPlatform());
         UserInfoRes.setAddress(user.getAddress() == null ? "" : user.getAddress());
         UserInfoRes.setLocationCode(user.getLocation() == null ? "" : user.getLocation().getCode());
         UserInfoRes.setUserAddress1(user.getLocation() == null ? "" : user.getLocation().getAddress1());
