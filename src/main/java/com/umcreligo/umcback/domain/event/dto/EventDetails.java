@@ -21,13 +21,5 @@ public class EventDetails {
     private String location;
     private String description;
 
-    public EventDetails(Event event) {
-        this.eventId = event.getId();
-        this.eventName = event.getEventName();
-        this.eventDate = event.getEventDate();
-        this.eventIntroduction = event.getEventIntroduction();
-        this.participation = event.getParticipation();
-        this.location = event.getLocation();
-        this.churchId = event.getChurchId();
-    }
+
 }

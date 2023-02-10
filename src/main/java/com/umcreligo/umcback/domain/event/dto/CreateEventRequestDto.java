@@ -19,6 +19,5 @@ public class CreateEventRequestDto {
 
     private String participation; // 참여대상
 
-    private String location;
 }
 
