@@ -2,6 +2,7 @@ package com.umcreligo.umcback.domain.community;
 
 import com.umcreligo.umcback.domain.church.repository.PlatformRepository;
 import com.umcreligo.umcback.domain.community.dto.*;
+import com.umcreligo.umcback.domain.community.repository.CommentRepository;
 import com.umcreligo.umcback.domain.community.service.CommunityService;
 import com.umcreligo.umcback.global.config.BaseResponse;
 import com.umcreligo.umcback.global.config.BaseResponseStatus;
@@ -19,6 +20,7 @@ import java.util.Objects;
 public class CommunityController {
     private final CommunityService communityService;
     private final PlatformRepository platformRepository;
+    private final CommentRepository commentRepository;
 
     //명세서 작성 완
 //    @GetMapping("/community/article")
@@ -70,6 +72,16 @@ public class CommunityController {
         }
     }
 
+
+    @GetMapping("/community/article/{articleId}")
+    public ResponseEntity<BaseResponse<DetailArticleRes>> getDetailArticle(@PathVariable Long articleId){
+        try{
+            return ResponseEntity.ok(new BaseResponse<>(this.communityService.getDetailArticle(articleId)));
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
+
+    }
 
     //명세서 작성 완
     @PostMapping("/community/article/new")
