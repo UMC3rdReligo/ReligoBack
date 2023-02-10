@@ -13,7 +13,6 @@ import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import com.umcreligo.umcback.global.config.BaseException;
 import com.umcreligo.umcback.global.config.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,18 +41,20 @@ public class ChurchCheckInServiceImpl implements ChurchCheckInService {
         ChurchRegistration churchRegistration = ChurchRegistration.builder()
             .user(user)
             .church(church)
-            .name(StringUtils.defaultString(param.getName()))
+            .name(param.getName())
             .birthday(param.getBirthday())
-            .phoneNum(StringUtils.defaultString(param.getPhoneNum()))
-            .address(StringUtils.defaultString(param.getAddress()))
-            .referee(StringUtils.defaultString(param.getReferee()))
-            .message(StringUtils.defaultString(param.getMessage()))
+            .phoneNum(param.getPhoneNum())
+            .address(param.getAddress())
+            .email(param.getEmail())
+            .referee(param.getReferee())
+            .message(param.getMessage())
             .scheduledDateTime(param.getScheduledDateTime())
             .build();
 
         user.setName(churchRegistration.getName());
         user.setPhoneNum(churchRegistration.getPhoneNum());
         user.setAddress(churchRegistration.getAddress());
+        user.setEmail(churchRegistration.getEmail());
         user.setChurch(church);
 
         this.churchRegistrationRepository.save(churchRegistration);

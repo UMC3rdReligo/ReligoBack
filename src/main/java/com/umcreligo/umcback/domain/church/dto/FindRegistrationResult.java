@@ -14,6 +14,7 @@ public class FindRegistrationResult {
     private LocalDate birthday;
     private String phoneNum;
     private String address;
+    private String email;
     private String referee;
     private String message;
     private LocalDateTime scheduledDateTime;

@@ -21,6 +21,9 @@ public class SignUpChurchMemberRequest {
     @Size(max = 300, message = "size must be between 0 and 300")
     private String address;
 
+    @Size(max = 300, message = "size must be between 0 and 300")
+    private String email;
+
     @Size(max = 30, message = "size must be between 0 and 30")
     private String referee;
 
