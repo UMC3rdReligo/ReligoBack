@@ -14,6 +14,7 @@ import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import com.umcreligo.umcback.global.config.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.asm.Advice;
+import org.apache.http.protocol.ResponseServer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,40 +38,37 @@ public class CommunityService {
     private final JwtService jwtService;
 
     private int FINDARTICLE_COUNT = 20;
+
     //전체 커뮤니티 내용 Type = TOTAL
-    public List<FindArticleRes> findAllArticles(FindArticleReq findArticleReq){
+    public List<FindArticleRes> findAllArticles(FindArticleReq findArticleReq) {
         List<Article> allArticles = articleRepository.findArticleByTypeOrderByCreatedAtDesc(CommunityType.TOTAL);
-        return findArticle(allArticles,findArticleReq);
+        return findArticle(allArticles, findArticleReq);
     }
-    public List<FindArticleRes> findChurchArticles(FindArticleReq findArticleReq){
-        List<Article> allArticles = articleRepository.findArticleByTypeAndChurchIdOrderByCreatedAtDesc(CommunityType.CHURCH,findArticleReq.getChurchId());
-        return findArticle(allArticles,findArticleReq);
+
+    public List<FindArticleRes> findChurchArticles(FindArticleReq findArticleReq) {
+        List<Article> allArticles = articleRepository.findArticleByTypeAndChurchIdOrderByCreatedAtDesc(CommunityType.CHURCH, findArticleReq.getChurchId());
+        return findArticle(allArticles, findArticleReq);
     }
-    public List<FindArticleRes> findPlatformArticles(FindArticleReq findArticleReq){
+
+    public List<FindArticleRes> findPlatformArticles(FindArticleReq findArticleReq) {
         List<Article> allArticles = articleRepository.findArticleByTypeOrderByCreatedAtDesc(stringToType(findArticleReq.getPlatformCode()));
-        return findArticle(allArticles,findArticleReq);
+        return findArticle(allArticles, findArticleReq);
     }
 
     //글쓰기
-    public void saveArticle(SaveArticleReq saveArticleReq){
+    public void saveArticle(SaveArticleReq saveArticleReq) {
         Article article = new Article();
         article.setTitle(saveArticleReq.getTitle());
         article.setType(stringToType(saveArticleReq.getType()));
         article.setUser(userRepository.findById(jwtService.getId()).get());
-
         article.setText(saveArticleReq.getText());
-
         article.setHeartCount(0);
-
-        //교회 게시글이 아닌 경우 -1을 받고, 데이터베이스에 null값 저장
-        if(saveArticleReq.getChurchId() == -1) article.setChurch(null);
-        else article.setChurch(churchRepository.findById(saveArticleReq.getChurchId()).get());
-
+        article.setChurch(userRepository.findById(jwtService.getId()).get().getChurch());
         articleRepository.save(article);
     }
 
     //댓글쓰기
-    public void saveComment(SaveCommentReq saveCommentReq){
+    public void saveComment(SaveCommentReq saveCommentReq) {
         Comment comment = new Comment();
         comment.setUser(userRepository.findById(jwtService.getId()).get());
         comment.setText(saveCommentReq.getText());
@@ -80,39 +78,64 @@ public class CommunityService {
     }
 
     //좋아요 버튼 클릭시
-    public void clickHeart(HeartClickReq heartClickReq){
+    public void clickHeart(HeartClickReq heartClickReq) {
         Article article = articleRepository.findById(heartClickReq.getArticleId()).get();
         User user = userRepository.findById(jwtService.getId()).get();
         System.out.println(article.getTitle());
         System.out.println(user.getEmail());
-        System.out.println(userArticleHeartRepository.existsByArticleAndUser(article,user));
-        if(userArticleHeartRepository.existsByArticleAndUser(article,user)){
+        System.out.println(userArticleHeartRepository.existsByArticleAndUser(article, user));
+        if (userArticleHeartRepository.existsByArticleAndUser(article, user)) {
             //이미 눌렀으면 취소
-            userArticleHeartRepository.deleteUserArticleHeartByArticleAndUser(article,user);
-            article.setHeartCount(article.getHeartCount()-1);
+            userArticleHeartRepository.deleteUserArticleHeartByArticleAndUser(article, user);
+            article.setHeartCount(article.getHeartCount() - 1);
             articleRepository.save(article);
-        }else{
+        } else {
             //눌려있지 않다면 누름.
             userArticleHeartRepository.save(UserArticleHeart.builder()
                 .article(article)
                 .user(user)
                 .build());
-            article.setHeartCount(article.getHeartCount()+1);
+            article.setHeartCount(article.getHeartCount() + 1);
             articleRepository.save(article);
         }
     }
 
+    public DetailArticleRes getDetailArticle(Long articleId) {
+        Article article = articleRepository.findById(articleId).get();
+        DetailArticleRes detailArticleRes = new DetailArticleRes();
+        List<Comment> commentList = commentRepository.findCommentByArticleId(articleId);
+
+        detailArticleRes.setText(article.getText());
+        detailArticleRes.setHearted(userArticleHeartRepository.existsByArticleAndUser(article, userRepository.findById(jwtService.getId()).get()));
+        detailArticleRes.setArticleId(articleId);
+        detailArticleRes.setTitle(article.getTitle());
+        detailArticleRes.setWriter(article.getUser().getNickname());
+        detailArticleRes.setCommentCnt(commentList.size());
+        detailArticleRes.setCreateAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        detailArticleRes.setHeartCnt(article.getHeartCount());
+        List<ResponseCommentDto> responseCommentDtoList = new ArrayList<>();
+        for(Comment c : commentList){
+            ResponseCommentDto responseCommentDto = new ResponseCommentDto();
+            responseCommentDto.setCreatedAt(c.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            responseCommentDto.setText(c.getText());
+            responseCommentDto.setName(c.getUser().getNickname());
+            responseCommentDtoList.add(responseCommentDto);
+        }
+        detailArticleRes.setComments(responseCommentDtoList);
+        return detailArticleRes;
+    }
+
     /*------내부사용 함수--------*/
 
-    public List<FindArticleRes> findArticle(List<Article> allArticles, FindArticleReq findArticleReq){
+    public List<FindArticleRes> findArticle(List<Article> allArticles, FindArticleReq findArticleReq) {
         List<FindArticleRes> resultList = new ArrayList<>();
         Optional<User> optional = userRepository.findById(jwtService.getId());
-        User user =optional.get();
+        User user = optional.get();
 
-        if(allArticles.size() < 20){
+        if (allArticles.size() < 20) {
             FINDARTICLE_COUNT = allArticles.size();
         }
-        for(int i = 0 ; i < FINDARTICLE_COUNT ; i++){
+        for (int i = 0; i < FINDARTICLE_COUNT; i++) {
             FindArticleRes findArticleRes = new FindArticleRes();
 
             Article article = allArticles.get(i);
@@ -124,61 +147,54 @@ public class CommunityService {
             findArticleRes.setArticleId(article.getId());
             findArticleRes.setWriter(article.getUser().getNickname());
             findArticleRes.setTitle(article.getTitle());
-            findArticleRes.setRecently(compareMinute(LocalDateTime.now(),article.getCreatedAt()));
+            findArticleRes.setRecently(compareMinute(LocalDateTime.now(), article.getCreatedAt()));
             findArticleRes.setCreateAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            //이름, 작성시간, 내용
-            Map<String,Object> commentMap = new HashMap<>();
-            for(Comment comment:commentList){
-                commentMap.put("name",comment.getUser().getNickname());
-                commentMap.put("text",comment.getText());
-                commentMap.put("createdAt",comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            }
-            findArticleRes.setComments(commentMap);
-
-            if(userArticleHeartRepository.existsByArticleAndUser(article,user))findArticleRes.setHearted(true);
+            findArticleRes.setCommentCnt(commentList.size());
+            if (userArticleHeartRepository.existsByArticleAndUser(article, user)) findArticleRes.setHearted(true);
             else findArticleRes.setHearted(false);
 
             resultList.add(findArticleRes);
         }
         return resultList;
     }
-    public CommunityType stringToType(String type){
-        if(type.equals("church"))
+
+    public CommunityType stringToType(String type) {
+        if (type.equals("church"))
             return CommunityType.CHURCH;
-        else if(type.equals("total"))
+        else if (type.equals("total"))
             return CommunityType.TOTAL;
-        else if(type.equals("PA1"))
+        else if (type.equals("PA1"))
             return CommunityType.PA1;
-        else if(type.equals("PA2"))
+        else if (type.equals("PA2"))
             return CommunityType.PA2;
-        else if(type.equals("PA3"))
+        else if (type.equals("PA3"))
             return CommunityType.PA3;
-        else if(type.equals("PB1"))
+        else if (type.equals("PB1"))
             return CommunityType.PB1;
-        else if(type.equals("PB2"))
+        else if (type.equals("PB2"))
             return CommunityType.PB2;
-        else if(type.equals("PB3"))
+        else if (type.equals("PB3"))
             return CommunityType.PB3;
         else
             return CommunityType.PC1;
     }
 
-    public String typeToString(CommunityType type){
-        if(type == CommunityType.CHURCH)
+    public String typeToString(CommunityType type) {
+        if (type == CommunityType.CHURCH)
             return "church";
-        else if(type == CommunityType.TOTAL)
+        else if (type == CommunityType.TOTAL)
             return "total";
-        else if(type == CommunityType.PA1)
+        else if (type == CommunityType.PA1)
             return "PA1";
-        else if(type == CommunityType.PA2)
+        else if (type == CommunityType.PA2)
             return "PA2";
-        else if(type == CommunityType.PA3)
+        else if (type == CommunityType.PA3)
             return "PA3";
-        else if(type == CommunityType.PB1)
+        else if (type == CommunityType.PB1)
             return "PB1";
-        else if(type == CommunityType.PB2)
+        else if (type == CommunityType.PB2)
             return "PB2";
-        else if(type == CommunityType.PB3)
+        else if (type == CommunityType.PB3)
             return "PB3";
         else
             return "PC1";
@@ -189,4 +205,6 @@ public class CommunityService {
         if (duration.toMinutes() < 3) return true;
         else return false;
     }
+
+
 }
