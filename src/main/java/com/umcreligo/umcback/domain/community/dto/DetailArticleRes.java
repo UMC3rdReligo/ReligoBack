@@ -1,20 +1,21 @@
 package com.umcreligo.umcback.domain.community.dto;
 
+import com.umcreligo.umcback.domain.community.domain.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FindArticleRes {
+public class DetailArticleRes {
 
     private Long articleId;
 
     private String writer;
-
-    private String type;
 
     private String title;
 
@@ -23,9 +24,11 @@ public class FindArticleRes {
     private int heartCnt;
 
     private int commentCnt;
+
     private boolean isHearted;
 
-    private boolean isRecently;
-
     private String createAt;
+
+    private List<ResponseCommentDto> comments;
+
 }
