@@ -32,11 +32,6 @@ public class EventController {
         }
     }
 
-    @PostMapping("/image")
-    public ResponseEntity<BaseResponse> createImage(@RequestBody CreateEventImageRes createEventImageRes){
-        eventService.createEventImage(createEventImageRes);
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
-    }
 
     @GetMapping("/{eventId}")
     public ResponseEntity<BaseResponse<EventsRes.EventInfo>> getEvent(@PathVariable Long eventId){
