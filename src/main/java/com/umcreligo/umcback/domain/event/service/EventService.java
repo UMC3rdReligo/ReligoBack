@@ -19,6 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +38,16 @@ public class EventService {
     private final ChurchRepository churchRepository;
 
     private final JwtService jwtService;
+    private final EntityManagerFactory enf;
 
     private final UserRepository userRepository;
 
     private final EventImageRepository eventImageRepository;
 
-    public void createEvent(CreateEventRequestDto createEventDto) {
+    public void createEvent(CreateEventRequestDto createEventDto) throws NoSuchElementException {
+        EntityManager em = enf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
         Church church = churchRepository.findById(createEventDto.getChurchId()).orElseThrow();
         Event event = Event.builder()
             .eventName(createEventDto.getEventName())
@@ -50,52 +57,25 @@ public class EventService {
             .location(church.getAddress())
             .church(church).build();
 
-        eventRepository.save(event);
-    }
-
-    public void createEventImage(CreateEventImageRes createEventImageRes){
-        Event event = eventRepository.findById(createEventImageRes.getId()).orElseThrow();
+        Long eventId = eventRepository.save(event).getId();
+        transaction.commit();
+        Event event1 = eventRepository.findById(eventId).orElseThrow();
         EventImage eventimage = new EventImage();
-        eventimage.setImageURL(createEventImageRes.getImageUrl());
-        eventimage.setEvent(event);
+        eventimage.setImageURL(createEventDto.getImageUrl());
+        eventimage.setEvent(event1);
         eventimage.setImageType(EventImage.ImageType.MAIN);
         eventImageRepository.save(eventimage);
     }
 
+
     public EventsRes.EventInfo getEvent(Long eventId) throws NoSuchElementException{
         Event event = eventRepository.findById(eventId).orElseThrow();
-        EventsRes.EventInfo eventInfo = new EventsRes.EventInfo();
-        List<EventImage> eventImage = (List<EventImage>) eventImageRepository.findAllByEventId(eventId);
-        List<String> eventImageUrl = new ArrayList<>();
-        for(int i=0;i<eventImage.size();i++){
-            eventImageUrl.add(eventImage.get(i).getImageURL());
-        }
-        eventInfo.setEventId(event.getId());
-        eventInfo.setEventImage(eventImageUrl);
-        eventInfo.setEventName(event.getEventName()==null ? "": event.getEventName());
-        eventInfo.setLocation(event.getLocation()==null ? "": event.getLocation());
-        eventInfo.setEventDate(event.getEventDate()==null ? LocalDateTime.MAX: event.getEventDate());
-        eventInfo.setEventIntroduction(event.getEventIntroduction()==null ? "": event.getEventIntroduction());
-        eventInfo.setParticipation(event.getParticipation()==null ? "": event.getParticipation());
-        return eventInfo;
+        return getEventInfo(event);
     }
     public EventsRes getEvents(int pageSize) throws NoSuchElementException {
         Page<Event> events = eventRepository.findAll(Pageable.ofSize(pageSize));
         List<EventsRes.EventInfo> eventInfos = events.stream().map(event -> {
-            EventsRes.EventInfo eventInfo = new EventsRes.EventInfo();
-            List<EventImage> eventImage = (List<EventImage>) eventImageRepository.findAllByEventId(event.getId());
-            List<String> eventImageUrl = new ArrayList<>();
-            for(int i=0;i<eventImage.size();i++){
-                eventImageUrl.add(eventImage.get(i).getImageURL());
-            }
-            eventInfo.setEventId(event.getId());
-            eventInfo.setEventImage(eventImageUrl);
-            eventInfo.setEventName(event.getEventName()==null ? "": event.getEventName());
-            eventInfo.setLocation(event.getLocation()==null ? "": event.getLocation());
-            eventInfo.setEventDate(event.getEventDate()==null ? LocalDateTime.MAX: event.getEventDate());
-            eventInfo.setEventIntroduction(event.getEventIntroduction()==null ? "": event.getEventIntroduction());
-            eventInfo.setParticipation(event.getParticipation()==null ? "": event.getParticipation());
-            return eventInfo;
+            return getEventInfo(event);
         }).collect(Collectors.toList());
         return new EventsRes(eventInfos);
     }
@@ -113,23 +93,26 @@ public class EventService {
         User user = userRepository.findWithJoinByIdAndStatus(jwtService.getId(), User.UserStatus.ACTIVE).orElseThrow();
         List<Event> events = eventRepository.findAllByChurchId(user.getChurch().getId(),Pageable.ofSize(pageSize));
         List<EventsRes.EventInfo> eventInfos = events.stream().map(event -> {
-            EventsRes.EventInfo eventInfo = new EventsRes.EventInfo();
-            List<EventImage> eventImage = (List<EventImage>) eventImageRepository.findAllByEventId(event.getId());
-            List<String> eventImageUrl = new ArrayList<>();
-            for(int i=0;i<eventImage.size();i++){
-                eventImageUrl.add(eventImage.get(i).getImageURL());
-            }
-            eventInfo.setEventId(event.getId());
-            eventInfo.setEventImage(eventImageUrl);
-            eventInfo.setEventName(event.getEventName()==null ? "": event.getEventName());
-            eventInfo.setLocation(event.getLocation()==null ? "": event.getLocation());
-            eventInfo.setEventDate(event.getEventDate()==null ? LocalDateTime.MAX: event.getEventDate());
-            eventInfo.setEventIntroduction(event.getEventIntroduction()==null ? "": event.getEventIntroduction());
-            eventInfo.setParticipation(event.getParticipation()==null ? "": event.getParticipation());
-            return eventInfo;
+            return getEventInfo(event);
         }).collect(Collectors.toList());
         return new EventsRes(eventInfos);
     }
 
+    private EventsRes.EventInfo getEventInfo(Event event){
+        EventsRes.EventInfo eventInfo = new EventsRes.EventInfo();
+        List<EventImage> eventImage = (List<EventImage>) eventImageRepository.findAllByEventId(event.getId());
+        List<String> eventImageUrl = new ArrayList<>();
+        for(int i=0;i<eventImage.size();i++){
+            eventImageUrl.add(eventImage.get(i).getImageURL());
+        }
+        eventInfo.setEventId(event.getId());
+        eventInfo.setEventImage(eventImageUrl);
+        eventInfo.setEventName(event.getEventName()==null ? "": event.getEventName());
+        eventInfo.setLocation(event.getLocation()==null ? "": event.getLocation());
+        eventInfo.setEventDate(event.getEventDate()==null ? LocalDateTime.MAX: event.getEventDate());
+        eventInfo.setEventIntroduction(event.getEventIntroduction()==null ? "": event.getEventIntroduction());
+        eventInfo.setParticipation(event.getParticipation()==null ? "": event.getParticipation());
+        return eventInfo;
+    }
 
 }

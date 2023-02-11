@@ -23,8 +23,13 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping
-    public void createEvent(@RequestBody CreateEventRequestDto createEventDto) {
-        eventService.createEvent(createEventDto);
+    public ResponseEntity<BaseResponse> createEvent(@RequestBody CreateEventRequestDto createEventDto) {
+        try{
+            eventService.createEvent(createEventDto);
+            return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
     }
 
     @PostMapping("/image")
