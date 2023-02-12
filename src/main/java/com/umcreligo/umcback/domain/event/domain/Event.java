@@ -1,24 +1,30 @@
 package com.umcreligo.umcback.domain.event.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.umcreligo.umcback.domain.church.domain.Church;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Getter
 @Entity
+@Table(name = "event")
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Event {
 
+
     @Id
-    @GeneratedValue
-    private long id; // pk
+    @GeneratedValue(strategy = IDENTITY)
+    private Long id; // pk
 
     private String eventName;
 
@@ -30,15 +36,26 @@ public class Event {
 
     private String location;
 
-    private long churchId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "churchId")
+    @ToString.Exclude
+    private Church church;
+
+    @Column
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @Builder
-    public Event(String eventName, LocalDateTime eventDate, String eventIntroduction, String participation, String location, long churchId) {
+    public Event(String eventName, LocalDateTime eventDate, String eventIntroduction, String participation, String location, Church church) {
         this.eventName = eventName;
         this.eventDate = eventDate;
         this.eventIntroduction = eventIntroduction;
         this.participation = participation;
         this.location = location;
-        this.churchId = churchId;
+        this.church = church;
     }
 }
