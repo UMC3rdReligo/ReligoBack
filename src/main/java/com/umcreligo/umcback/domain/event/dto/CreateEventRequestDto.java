@@ -17,8 +17,9 @@ public class CreateEventRequestDto {
 
     private long churchId;
 
+    private String imageUrl;
+
     private String participation; // 참여대상
 
-    private String location;
 }
 

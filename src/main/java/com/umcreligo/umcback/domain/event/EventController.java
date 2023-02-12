@@ -1,13 +1,19 @@
 package com.umcreligo.umcback.domain.event;
 
 import com.umcreligo.umcback.domain.event.domain.Event;
+import com.umcreligo.umcback.domain.event.dto.CreateEventImageRes;
 import com.umcreligo.umcback.domain.event.dto.CreateEventRequestDto;
 import com.umcreligo.umcback.domain.event.dto.EventsRes;
-import com.umcreligo.umcback.domain.event.dto.GetEventByChurchIdResponseDto;
-import com.umcreligo.umcback.domain.event.dto.GetEventByIdResponseDto;
 import com.umcreligo.umcback.domain.event.service.EventService;
+import com.umcreligo.umcback.global.config.BaseResponse;
+import com.umcreligo.umcback.global.config.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,27 +23,49 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping
-    public void createEvent(@RequestBody CreateEventRequestDto createEventDto) {
-        eventService.createEvent(createEventDto);
+    public ResponseEntity<BaseResponse> createEvent(@RequestBody CreateEventRequestDto createEventDto) {
+        try{
+            eventService.createEvent(createEventDto);
+            return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
     }
 
-    @GetMapping("/eventId/{id}")
-    public GetEventByIdResponseDto getEvent(@PathVariable long id) {
-        return new GetEventByIdResponseDto(eventService.getEvent(id));
+
+    @GetMapping("/{eventId}")
+    public ResponseEntity<BaseResponse<EventsRes.EventInfo>> getEvent(@PathVariable Long eventId){
+        try {
+            EventsRes.EventInfo eventInfo = eventService.getEvent(eventId);
+            return ResponseEntity.ok(new BaseResponse<>(eventInfo));
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteEvent(@PathVariable long id) {
-        eventService.deleteEvent(id);
+    @DeleteMapping("/{eventId}")
+    public void deleteEvent(@PathVariable long eventId) {
+        eventService.deleteEvent(eventId);
     }
 
-    @GetMapping("/churchId/{churchId}")
-    public GetEventByChurchIdResponseDto findByChurchId(@PathVariable long churchId) {
-        return new GetEventByChurchIdResponseDto(eventService.findByChurchId(churchId));
+
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse<EventsRes>> allEvent(){
+        try{
+            EventsRes eventRes = eventService.getEvents(10);
+            return ResponseEntity.ok(new BaseResponse<>(eventRes));
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
     }
 
-    @GetMapping("/event/all")
-    public EventsRes allEvent(){
-        return new EventsRes(eventService.getEvents());
+    @GetMapping("/bychurch")
+    public ResponseEntity<BaseResponse<EventsRes>> churchEvent(){
+        try{
+            EventsRes eventRes = eventService.findByChurchId(10);
+            return ResponseEntity.ok(new BaseResponse<>(eventRes));
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
+        }
     }
 }
