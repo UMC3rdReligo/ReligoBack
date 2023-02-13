@@ -4,13 +4,18 @@ import com.umcreligo.umcback.domain.church.repository.PlatformRepository;
 import com.umcreligo.umcback.domain.community.dto.*;
 import com.umcreligo.umcback.domain.community.repository.CommentRepository;
 import com.umcreligo.umcback.domain.community.service.CommunityService;
+import com.umcreligo.umcback.domain.review.dto.FindReviewResult;
+import com.umcreligo.umcback.domain.review.dto.FindReviewsResponse;
 import com.umcreligo.umcback.global.config.BaseResponse;
 import com.umcreligo.umcback.global.config.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -38,6 +43,15 @@ public class CommunityController {
 //            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(BaseResponseStatus.NOT_FOUND));
 //        }
 //    }
+
+//    @GetMapping("/community/article/page")
+//    public ResponseEntity<BaseResponse<FindReviewsResponse>> getArticlePage(@RequestParam(value = "page", defaultValue = "1")
+//                                                                               @Positive(message = "must be greater than 0")
+//                                                                               Integer page) {
+//        Page<FindReviewResult> reviews = this.communityService.findArticlePage(PageRequest.of(page - 1, 20));
+//        return this.createFindReviewsResponseEntity(reviews);
+//    }
+
 
     @GetMapping("/community/article/all")
     public ResponseEntity<BaseResponse<List<FindArticleRes>>> getAllArticle() {
