@@ -9,12 +9,17 @@ import com.umcreligo.umcback.domain.community.dto.*;
 import com.umcreligo.umcback.domain.community.repository.ArticleRepository;
 import com.umcreligo.umcback.domain.community.repository.CommentRepository;
 import com.umcreligo.umcback.domain.community.repository.UserArticleHeartRepository;
+import com.umcreligo.umcback.domain.review.domain.Review;
+import com.umcreligo.umcback.domain.review.dto.FindReviewResult;
 import com.umcreligo.umcback.domain.user.domain.User;
 import com.umcreligo.umcback.domain.user.repository.UserRepository;
 import com.umcreligo.umcback.global.config.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.asm.Advice;
 import org.apache.http.protocol.ResponseServer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -58,12 +64,13 @@ public class CommunityService {
     //글쓰기
     public void saveArticle(SaveArticleReq saveArticleReq) {
         Article article = new Article();
+        User user = userRepository.findById(jwtService.getId()).get();
         article.setTitle(saveArticleReq.getTitle());
         article.setType(stringToType(saveArticleReq.getType()));
-        article.setUser(userRepository.findById(jwtService.getId()).get());
+        article.setUser(user);
         article.setText(saveArticleReq.getText());
         article.setHeartCount(0);
-        article.setChurch(userRepository.findById(jwtService.getId()).get().getChurch());
+        article.setChurch(user.getChurch());
         articleRepository.save(article);
     }
 
@@ -157,6 +164,19 @@ public class CommunityService {
         }
         return resultList;
     }
+
+//    public Page<FindArticleRes> findArticlePage(Pageable pageable) {
+//        Page<Article> articles;
+//
+//        articles = articleRepository.findArticleByTypeOrderByCreatedAtDesc(CommunityType.TOTAL,pageable);
+//
+////        List<FindArticleRes> results = articles.stream()
+////            .map(article -> this.createFindReviewResult(requestedByUserId, review))
+////            .collect(Collectors.toList());
+//
+//        return new PageImpl<>(results, pageable, articles.getTotalElements());
+//    }
+
 
     public CommunityType stringToType(String type) {
         if (type.equals("church"))

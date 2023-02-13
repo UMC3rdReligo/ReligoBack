@@ -8,8 +8,6 @@ public class SaveArticleReq {
 
     private String type;
 
-    private Long churchId;
-
     private String title;
 
     private String text;
